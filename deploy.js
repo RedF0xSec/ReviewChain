@@ -2,10 +2,6 @@ const { Web3 } = require('web3');
 const fs = require('fs');
 
 
-// COMMENTO PAX
-
-const ciao = "Ciao, sono un commento di test per il deploy.js";
-
 // Connect to Ganache
 const web3 = new Web3('http://localhost:7545');
 

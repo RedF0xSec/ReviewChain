@@ -8,10 +8,6 @@ function readContract(contractName) {
     return fs.readFileSync(contractPath, 'utf8');
 }
 
-// COMMENTO PAX
-// Ciao, sono un commento di test per il compile.js
-console.log("Ciao, sono un commento di test per il compile.js");
-
 // Read contracts
 const certifiedAuthoritySource = readContract('CertifiedAuthority.sol');
 const actorRegistrySource = readContract('ActorRegistry.sol');
