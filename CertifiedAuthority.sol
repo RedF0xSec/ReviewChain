@@ -4,7 +4,7 @@ pragma solidity ^0.8.0;
 // Questo contratto deve rappresentare un finto oracolo (MockOracle)
 contract CertifiedAuthority {
     address public owner;
-    string[] private validPivas;
+    mapping(address => bool) private validPivas;
 
     // Modifiers
     modifier onlyOwner() {
