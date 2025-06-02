@@ -1,0 +1,23 @@
+{
+  "name": "reviewchain",
+  "version": "1.0.0",
+  "description": "",
+  "main": "compile.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/RedF0xSec/ReviewChain.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/RedF0xSec/ReviewChain/issues"
+  },
+  "homepage": "https://github.com/RedF0xSec/ReviewChain#readme",
+  "dependencies": {
+    "solc": "^0.8.0"
+  }
+}
