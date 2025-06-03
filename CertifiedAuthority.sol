@@ -18,10 +18,11 @@ contract CertifiedAuthority {
         // Inizializzazione di alcune PIVA valide
         validPivas["IT12345678901"] = "CHEZ DARIO D'AGOSTINO";
         validPivas["IT10762910015"] = "PEPPERONI PIZA PLAZA";
-        validPivas["IT04273860611"] = "P. GRECO";
+        validPivas["04273860611"] = "P. GRECO";
     }
     
     function isPivaValid(string memory piva) public onlyOwner view returns (bool){
-        return validPivas[piva];
+        string memory value = validPivas[piva];
+        return bytes(value).length > 0;
     }
 }
