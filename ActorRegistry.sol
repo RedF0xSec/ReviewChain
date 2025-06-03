@@ -21,12 +21,13 @@ contract ActorRegistry {
     }
 
     // Aggiunge un seller se la PIVA è valida
-    function addSeller(address restaurant, string memory piva) public onlyOwner {
-
+    function addSeller(address restaurant, string calldata piva) public {
+        require(certifiedAuthority.isPivaValid(piva), "piva not valid");
+        verifiedSellers[restaurant] = true;
     }
 
     // Controlla se un ristorante è verificato
     function verifySeller(address restaurant) public view returns (bool) {
-
+        return verifiedSellers[restaurant];
     }
 }
