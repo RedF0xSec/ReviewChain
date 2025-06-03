@@ -33,18 +33,18 @@ async function interactWithContracts() {
         
         const ristorante = accounts[1];
 
-        // 2. Registra il ristorante
+        // Registra il ristorante
         const piva = "IT12345678901";
 	
-	    //ristorante con partita iva valida
+	    // Ristorante con partita iva valida
         await actorRegistryContract.methods.addSeller(ristorante, piva).send({ from: accounts[0] });
         console.log("Ristorante registrato con partita IVA:", piva);
 
-	    //ristorante corretto
+	    // Ristorante corretto
 	    let value = await actorRegistryContract.methods.verifySeller(ristorante).call({ from: accounts[0]});
 	    console.log("Ristorante verificato " + value);
 
-	    //ristorante inesistente
+	    // Ristorante inesistente
 	    value = await actorRegistryContract.methods.verifySeller(accounts[3]).call({ from: accounts[0]});
 	    console.log("Ristorante verificato " + value);
 
@@ -54,9 +54,9 @@ async function interactWithContracts() {
         console.error('Dettagli dell\'errore:', JSON.stringify(error, null, 2));
     }
 
-    //sezione test errori
+    //SEZIONE PER TESTARE GLI ERRORI
     try{
-        //ristorante valido ma con partita iva non valida
+        // Ristorante valido ma con partita iva non valida
         await actorRegistryContract.methods.addSeller(accounts[5], "5").send({ from: accounts[0] });
         console.log("Ristorante registrato con partita IVA non valida");
     }catch(error){
@@ -64,8 +64,6 @@ async function interactWithContracts() {
         // Stampa dettagli aggiuntivi dell'errore
         console.error('Dettagli dell\'errore:', JSON.stringify(error, null, 2));
     }
-
-    //🦆🦆
 
 }
 
