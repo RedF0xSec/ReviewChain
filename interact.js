@@ -29,27 +29,11 @@ async function interactWithContracts() {
     try {
         const accounts = await web3.eth.getAccounts();
         const ristorante = accounts[1];
-        const utente1 = accounts[2];
-        const utente2 = accounts[3];
 
         // 2. Registra il ristorante
         const piva = "IT12345678901";
         await actorRegistryContract.methods.addSeller(ristorante, piva).send({ from: accounts[0] });
         console.log("Ristorante registrato con partita IVA:", piva);
-
-        // 3. Utente1 aggiunge una recensione
-        const ristoranteOnChain = web3.utils.sha3(ristorante); //qui vanno hashati?
-        const utente1OnChain = web3.utils.sha3(utente1);
-        const contenutoRecensione = "Ottimo cibo e servizio!";
-        const reviewID  = await reviewManagerContract.methods.addReview(utente1, ristorante, contenutoRecensione).send({ from: utente1 });
-        console.log("Recensione aggiunta da utente1, ID:", reviewID);
-
-        // 4. Utente2 mette like alla recensione
-        const utente2OnChain = web3.utils.sha3(utente2);
-        await reviewManagerContract.methods.likeReview(reviewID, utente2).send({ from: utente2 });
-        console.log("Utente2 ha messo like alla recensione", reviewID);
-
-
 
     } catch (error) {
         console.error('Errore:', error);
