@@ -5,6 +5,8 @@ import "./VoucherManager.sol";
 import "./TokenManager.sol";
 import "./ActorRegistry.sol";
 
+//qui va aggiunto un modifier
+
 contract ReviewManager {
     struct Review {
         string Uaddress; 
