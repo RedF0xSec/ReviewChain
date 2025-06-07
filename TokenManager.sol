@@ -5,8 +5,11 @@ import "./ActorRegistry.sol";
 import "./VoucherManager.sol";
 
 contract TokenManager {
-    // Mapping: Utente (user) address => Ristorante (restaurant) address => token counter
-    mapping(address => mapping(address => uint256)) private Tokens;
+    string public name = "BITE";
+    string public symbol = "BTE";
+    uint8 public decimals = 18;
+
+    mapping(address => mapping(address => uint256)) private tokens;
 
     ActorRegistry public actorRegistry;
     VoucherManager public voucherManager;
@@ -16,37 +19,51 @@ contract TokenManager {
         voucherManager = VoucherManager(_voucherManager);
     }
 
-    // Modifiers
     modifier onlySender(address sender) {
-        require(msg.sender == sender, "Solo il sender puo eseguire questa operazione");
-       _;
+        require(msg.sender == sender, "Only the sender can perform this operation");
+        _;
     }
 
-    // Deve incrementare il contatore dei token per l'utente verso il ristorante
+    event Payment(address indexed from, address indexed to, uint256 amount, uint256 voucherID);
+    event TokenIncremented(address indexed user, address indexed restaurant, uint256 newCount);
+    event TokenDecremented(address indexed user, address indexed restaurant, uint256 newCount);
+    event VoucherUsed(uint256 indexed voucherID, address indexed user, address indexed restaurant);
+
     function incrementTokenCounter(address Uaddress, address Raddress) private {
-        
+        tokens[Uaddress][Raddress]++;
+        emit TokenIncremented(Uaddress, Raddress, tokens[Uaddress][Raddress]);
     }
 
-    // Deve decrementare il contatore dei token per l'utente verso il ristorante
-    function decrementTokenCounter(address Uaddress, address Raddress) private {
-        
+    function decrementTokenCounter(address Uaddress, address Raddress) external {
+        require(getTokenCountUserPerRestaurant(Uaddress, Raddress) > 0, "Insufficient tokens");
+        tokens[Uaddress][Raddress]--;
+        emit TokenDecremented(Uaddress, Raddress, tokens[Uaddress][Raddress]);
     }
 
-    // Funzione per effettuare il pagamento (con sconto)
-    // ammount: prezzo da pagare
-    function pay(address receiver,uint256 ammount, Voucher memory discount) external payable onlySender(msg.sender) {
-        
-    // 1. Verifica del possesso dell’address dell’utente. (questo solidity lo fa il automatico)
-    // Quando chiami una funzione di uno smart contract, il tuo wallet firma digitalmente la transazione con la tua chiave privata. Questa firma è controllata da tutti i nodi Ethereum. Solo se è valida, la transazione viene eseguita.
-    // 2. Verifica l’identità del ristorante
+    function getTokenCountUserPerRestaurant(address Uaddress, address Raddress) public view returns (uint256) {
+        return tokens[Uaddress][Raddress];
+    }
 
-    // 3. Verifica l’NFT (controlla che l'utente corrisponda all'owner e che il ristorante sia lo stesso di quello a cui si sta facendo il pagamento) e applicalo al prezzo da pagare
+    function pay(address receiver, uint256 amount, uint256 voucherID) external payable onlySender(msg.sender) {
+        require(actorRegistry.verifySeller(receiver), "The restaurant is not part of the affiliated system");
 
-    // 4. Verifica il saldo (vedi msg.value)
+        uint256 amountToPay = amount;
 
-    // 5. Effettua il pagamento (vedi payable().transfer)
+        if (voucherID != 0) {
+            (address owner, address restaurant, uint256 discountAmount) = voucherManager.getVoucher(voucherID);
+            require(owner == msg.sender, "You are not the owner of the NFT");
+            require(restaurant == receiver, "The restaurant associated with the NFT is not the same as the one you are paying");
+            require(actorRegistry.verifySeller(restaurant), "The restaurant referenced by the NFT is not part of the affiliated system");
+            require(discountAmount <= amount, "You cannot use the voucher");
+            //qui andrebbe un controllo su se è già stato usato
 
-    // 6. Rilascia il token
-    
+            amountToPay = amount - discountAmount;
+            emit VoucherUsed(voucherID, msg.sender, receiver);
+        }
+
+        require(msg.value >= amountToPay, "Insufficient balance for payment");
+        payable(receiver).transfer(amountToPay);
+        incrementTokenCounter(msg.sender, receiver);
+        emit Payment(msg.sender, receiver, amountToPay, voucherID);
     }
 }

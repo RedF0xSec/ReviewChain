@@ -11,6 +11,7 @@ struct Voucher {
     string metadataURI;
 }
 
+// Qui va aggiunto qualcosa che possa far capire se è stato già usato o no
 contract VoucherManager {
     uint256 public counter; //per l'id progressivo dei voucher
     mapping(uint256 => Voucher) public vouchers;
@@ -25,6 +26,12 @@ contract VoucherManager {
     // Funzione interna per emettere un voucher
     function emitVoucher(address customer, address restaurant, uint256 discount, string memory metadataURI) external {
     
+    }
+
+    // Funzione getter
+    function getVoucher(uint256 id) external view returns (address owner, address restaurant, uint256 discount) {
+        Voucher memory v = vouchers[id];
+        return (v.owner, v.restaurant, v.discount);
     }
 }
 
