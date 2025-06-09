@@ -39,6 +39,12 @@
       },
       {
         "indexed": false,
+        "internalType": "bool",
+        "name": "available",
+        "type": "bool"
+      },
+      {
+        "indexed": false,
         "internalType": "string",
         "name": "metadataURI",
         "type": "string"
@@ -48,21 +54,29 @@
     "type": "event"
   },
   {
-    "inputs": [],
-    "name": "actorRegistry",
-    "outputs": [
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "voucherID",
+        "type": "uint256"
+      },
       {
         "internalType": "address",
-        "name": "",
+        "name": "owner",
         "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "restaurant",
+        "type": "address"
+      },
+      {
+        "internalType": "uint256",
+        "name": "amount",
+        "type": "uint256"
       }
     ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "counter",
+    "name": "applyVoucher",
     "outputs": [
       {
         "internalType": "uint256",
@@ -75,6 +89,42 @@
   },
   {
     "inputs": [
+      {
+        "internalType": "address",
+        "name": "_customer",
+        "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "_restaurant",
+        "type": "address"
+      },
+      {
+        "internalType": "uint256",
+        "name": "_discount",
+        "type": "uint256"
+      },
+      {
+        "internalType": "string",
+        "name": "_metadataURI",
+        "type": "string"
+      }
+    ],
+    "name": "emitVoucher",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "idVaucher",
+        "type": "uint256"
+      }
+    ],
+    "name": "getVoucher",
+    "outputs": [
       {
         "internalType": "address",
         "name": "customer",
@@ -91,12 +141,41 @@
         "type": "uint256"
       },
       {
-        "internalType": "string",
-        "name": "metadataURI",
-        "type": "string"
+        "internalType": "bool",
+        "name": "available",
+        "type": "bool"
       }
     ],
-    "name": "emitVoucher",
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "idVaucher",
+        "type": "uint256"
+      }
+    ],
+    "name": "invalidateVoucher",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "_reviewManager",
+        "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "_tokenManager",
+        "type": "address"
+      }
+    ],
+    "name": "setAuthorizedAddress",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
@@ -130,6 +209,11 @@
         "internalType": "uint256",
         "name": "discount",
         "type": "uint256"
+      },
+      {
+        "internalType": "bool",
+        "name": "available",
+        "type": "bool"
       },
       {
         "internalType": "string",

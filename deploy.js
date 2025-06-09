@@ -21,6 +21,9 @@ const ReviewManager_bytecode = fs.readFileSync('ReviewManagerBytecode.bin', 'utf
 const VoucherManager_abi = JSON.parse(fs.readFileSync('VoucherManagerAbi.json', 'utf8'));
 const VoucherManager_bytecode = fs.readFileSync('VoucherManagerBytecode.bin', 'utf8');
 
+const SupportReviewManager_abi = JSON.parse(fs.readFileSync('SupportReviewManagerAbi.json', 'utf8'));
+const SupportReviewManager_bytecode = fs.readFileSync('SupportReviewManagerBytecode.bin', 'utf8');
+
 async function deployContract() {
     const accounts = await web3.eth.getAccounts();
 
@@ -55,9 +58,16 @@ async function deployContract() {
     console.log('TokenManager deployed at address:', deployedTokenManagerContract.options.address);
 
     // Deploy ReviewManager contract, passando l'indirizzo di ActorRegistry, VoucherManager e TokenManager
+    const SupportReviewManager_contract = new web3.eth.Contract(SupportReviewManager_abi);
+    const deployedSupportReviewManagerContract = await SupportReviewManager_contract
+        .deploy({ data: '0x' + SupportReviewManager_bytecode, arguments: [deployedActorRegistryContract.options.address, deployedVoucherManagerContract.options.address, deployedTokenManagerContract.options.address] })
+        .send({ from: accounts[0], gas: 1500000, gasPrice: '30000000000' });
+    console.log('SupportReviewManager deployed at address:', deployedSupportReviewManagerContract.options.address);
+
+    // Deploy ReviewManager contract, passando l'indirizzo di ActorRegistry, VoucherManager e TokenManager
     const ReviewManager_contract = new web3.eth.Contract(ReviewManager_abi);
     const deployedReviewManagerContract = await ReviewManager_contract
-        .deploy({ data: '0x' + ReviewManager_bytecode, arguments: [deployedTokenManagerContract.options.address, deployedActorRegistryContract.options.address, deployedVoucherManagerContract.options.address] })
+        .deploy({ data: '0x' + ReviewManager_bytecode, arguments: [deployedSupportReviewManagerContract.options.address] })
         .send({ from: accounts[0], gas: 1500000, gasPrice: '30000000000' });
     console.log('ReviewManager deployed at address:', deployedReviewManagerContract.options.address);
 

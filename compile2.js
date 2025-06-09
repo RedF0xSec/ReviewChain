@@ -9,23 +9,17 @@ function readContract(contractName) {
 }
 
 // Read contracts
-const certifiedAuthoritySource = readContract('CertifiedAuthority.sol');
-const actorRegistrySource = readContract('ActorRegistry.sol');
 const voucherManagerSource = readContract('VoucherManager.sol');
 const tokenManagerSource = readContract('TokenManager.sol');
 const reviewManagerSource = readContract('ReviewManager.sol');
-const supportReviewManagerSource = readContract('SupportReviewManager.sol');
 
 // Input for the Solidity compiler
 const input = {
     language: 'Solidity',
     sources: {
-        'CertifiedAuthority.sol': { content: certifiedAuthoritySource },
-        'ActorRegistry.sol': { content: actorRegistrySource },
         'VoucherManager.sol': { content: voucherManagerSource },
         'TokenManager.sol': { content: tokenManagerSource },
         'ReviewManager.sol': { content: reviewManagerSource },
-	'SupportReviewManager.sol': { content: supportReviewManagerSource},
     },
     settings: {
         outputSelection: {
@@ -64,7 +58,6 @@ writeOutput('ActorRegistry');
 writeOutput('VoucherManager');
 writeOutput('TokenManager');
 writeOutput('ReviewManager');
-writeOutput('SupportReviewManager');
 
 
 console.log('All contracts compiled successfully!');

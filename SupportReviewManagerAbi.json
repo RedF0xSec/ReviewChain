@@ -10,6 +10,11 @@
         "internalType": "address",
         "name": "_voucherManager",
         "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "_tokenManager",
+        "type": "address"
       }
     ],
     "stateMutability": "nonpayable",
@@ -20,80 +25,30 @@
     "inputs": [
       {
         "indexed": true,
-        "internalType": "address",
-        "name": "from",
-        "type": "address"
-      },
-      {
-        "indexed": true,
-        "internalType": "address",
-        "name": "to",
-        "type": "address"
-      },
-      {
-        "indexed": false,
         "internalType": "uint256",
-        "name": "amount",
+        "name": "reviewID",
         "type": "uint256"
       },
       {
         "indexed": false,
-        "internalType": "uint256",
-        "name": "voucherID",
-        "type": "uint256"
+        "internalType": "address",
+        "name": "Uaddress",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "address",
+        "name": "Raddress",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "string",
+        "name": "content",
+        "type": "string"
       }
     ],
-    "name": "Payment",
-    "type": "event"
-  },
-  {
-    "anonymous": false,
-    "inputs": [
-      {
-        "indexed": true,
-        "internalType": "address",
-        "name": "user",
-        "type": "address"
-      },
-      {
-        "indexed": true,
-        "internalType": "address",
-        "name": "restaurant",
-        "type": "address"
-      },
-      {
-        "indexed": false,
-        "internalType": "uint256",
-        "name": "newCount",
-        "type": "uint256"
-      }
-    ],
-    "name": "TokenDecremented",
-    "type": "event"
-  },
-  {
-    "anonymous": false,
-    "inputs": [
-      {
-        "indexed": true,
-        "internalType": "address",
-        "name": "user",
-        "type": "address"
-      },
-      {
-        "indexed": true,
-        "internalType": "address",
-        "name": "restaurant",
-        "type": "address"
-      },
-      {
-        "indexed": false,
-        "internalType": "uint256",
-        "name": "newCount",
-        "type": "uint256"
-      }
-    ],
-    "name": "TokenIncremented",
+    "name": "ReviewAdded",
     "type": "event"
   },
   {
@@ -102,23 +57,49 @@
       {
         "indexed": true,
         "internalType": "uint256",
-        "name": "voucherID",
+        "name": "reviewID",
+        "type": "uint256"
+      }
+    ],
+    "name": "ReviewDeleted",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "uint256",
+        "name": "reviewID",
         "type": "uint256"
       },
       {
-        "indexed": true,
+        "indexed": false,
         "internalType": "address",
-        "name": "user",
-        "type": "address"
-      },
-      {
-        "indexed": true,
-        "internalType": "address",
-        "name": "restaurant",
+        "name": "Uaddress",
         "type": "address"
       }
     ],
-    "name": "VoucherUsed",
+    "name": "ReviewLiked",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "uint256",
+        "name": "reviewID",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "string",
+        "name": "newContent",
+        "type": "string"
+      }
+    ],
+    "name": "ReviewModified",
     "type": "event"
   },
   {
@@ -135,19 +116,6 @@
     "type": "function"
   },
   {
-    "inputs": [],
-    "name": "decimals",
-    "outputs": [
-      {
-        "internalType": "uint8",
-        "name": "",
-        "type": "uint8"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
     "inputs": [
       {
         "internalType": "address",
@@ -160,7 +128,48 @@
         "type": "address"
       }
     ],
-    "name": "decrementTokenCounter",
+    "name": "add",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "reviewID",
+        "type": "uint256"
+      },
+      {
+        "internalType": "address",
+        "name": "Uaddress",
+        "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "Raddress",
+        "type": "address"
+      },
+      {
+        "internalType": "string",
+        "name": "content",
+        "type": "string"
+      }
+    ],
+    "name": "addEvent",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "reviewID",
+        "type": "uint256"
+      }
+    ],
+    "name": "deleteEvent",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
@@ -176,53 +185,39 @@
         "internalType": "address",
         "name": "Raddress",
         "type": "address"
-      }
-    ],
-    "name": "getTokenCountUserPerRestaurant",
-    "outputs": [
+      },
       {
         "internalType": "uint256",
-        "name": "",
+        "name": "reviewID",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "numLikes",
         "type": "uint256"
       }
     ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "name",
-    "outputs": [
-      {
-        "internalType": "string",
-        "name": "",
-        "type": "string"
-      }
-    ],
-    "stateMutability": "view",
+    "name": "like",
+    "outputs": [],
+    "stateMutability": "nonpayable",
     "type": "function"
   },
   {
     "inputs": [
       {
-        "internalType": "address",
-        "name": "receiver",
-        "type": "address"
-      },
-      {
         "internalType": "uint256",
-        "name": "amount",
+        "name": "reviewID",
         "type": "uint256"
       },
       {
-        "internalType": "uint256",
-        "name": "voucherID",
-        "type": "uint256"
+        "internalType": "string",
+        "name": "content",
+        "type": "string"
       }
     ],
-    "name": "pay",
+    "name": "modifyEvent",
     "outputs": [],
-    "stateMutability": "payable",
+    "stateMutability": "nonpayable",
     "type": "function"
   },
   {
@@ -233,19 +228,19 @@
         "type": "address"
       }
     ],
-    "name": "setAuthorizedAddress",
+    "name": "setAuthorized",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
   },
   {
     "inputs": [],
-    "name": "symbol",
+    "name": "tokenManager",
     "outputs": [
       {
-        "internalType": "string",
+        "internalType": "contract TokenManager",
         "name": "",
-        "type": "string"
+        "type": "address"
       }
     ],
     "stateMutability": "view",

@@ -1,5 +1,16 @@
 [
   {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "_supportReviewManager",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "nonpayable",
+    "type": "constructor"
+  },
+  {
     "anonymous": false,
     "inputs": [
       {
@@ -19,94 +30,7 @@
     "type": "event"
   },
   {
-    "anonymous": false,
     "inputs": [
-      {
-        "indexed": true,
-        "internalType": "uint256",
-        "name": "reviewID",
-        "type": "uint256"
-      },
-      {
-        "indexed": false,
-        "internalType": "address",
-        "name": "Uaddress",
-        "type": "address"
-      },
-      {
-        "indexed": false,
-        "internalType": "address",
-        "name": "Raddress",
-        "type": "address"
-      },
-      {
-        "indexed": false,
-        "internalType": "string",
-        "name": "content",
-        "type": "string"
-      }
-    ],
-    "name": "ReviewAdded",
-    "type": "event"
-  },
-  {
-    "anonymous": false,
-    "inputs": [
-      {
-        "indexed": true,
-        "internalType": "uint256",
-        "name": "reviewID",
-        "type": "uint256"
-      }
-    ],
-    "name": "ReviewDeleted",
-    "type": "event"
-  },
-  {
-    "anonymous": false,
-    "inputs": [
-      {
-        "indexed": true,
-        "internalType": "uint256",
-        "name": "reviewID",
-        "type": "uint256"
-      },
-      {
-        "indexed": false,
-        "internalType": "address",
-        "name": "Uaddress",
-        "type": "address"
-      }
-    ],
-    "name": "ReviewLiked",
-    "type": "event"
-  },
-  {
-    "anonymous": false,
-    "inputs": [
-      {
-        "indexed": true,
-        "internalType": "uint256",
-        "name": "reviewID",
-        "type": "uint256"
-      },
-      {
-        "indexed": false,
-        "internalType": "string",
-        "name": "newContent",
-        "type": "string"
-      }
-    ],
-    "name": "ReviewModified",
-    "type": "event"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "address",
-        "name": "Uaddress",
-        "type": "address"
-      },
       {
         "internalType": "address",
         "name": "Raddress",
@@ -174,12 +98,31 @@
   {
     "inputs": [
       {
-        "internalType": "string",
-        "name": "Raddress",
-        "type": "string"
+        "internalType": "uint256",
+        "name": "reviewID",
+        "type": "uint256"
       }
     ],
-    "name": "getRestaurantByDID",
+    "name": "getNumberofLikes",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "Raddress",
+        "type": "address"
+      }
+    ],
+    "name": "getRestaurantReviewsByAddress",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
@@ -214,11 +157,6 @@
         "internalType": "uint256",
         "name": "reviewID",
         "type": "uint256"
-      },
-      {
-        "internalType": "address",
-        "name": "Uaddress",
-        "type": "address"
       }
     ],
     "name": "likeReview",
@@ -292,14 +230,14 @@
     "name": "reviews",
     "outputs": [
       {
-        "internalType": "string",
+        "internalType": "address",
         "name": "Uaddress",
-        "type": "string"
+        "type": "address"
       },
       {
-        "internalType": "string",
+        "internalType": "address",
         "name": "Raddress",
-        "type": "string"
+        "type": "address"
       },
       {
         "internalType": "string",
@@ -307,9 +245,27 @@
         "type": "string"
       },
       {
-        "internalType": "bool",
-        "name": "verified",
-        "type": "bool"
+        "internalType": "uint256",
+        "name": "numLikes",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "timestamp",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "supportReviewManager",
+    "outputs": [
+      {
+        "internalType": "contract SupportReviewManager",
+        "name": "",
+        "type": "address"
       }
     ],
     "stateMutability": "view",
