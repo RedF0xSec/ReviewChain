@@ -25,7 +25,7 @@ contract VoucherManager {
     
     constructor(address _actorRegistry) {
         actorRegistry = _actorRegistry;
-        counter = 1; // Inizializza il contatore a zero
+        counter = 0; // Inizializza il contatore a zero
         owner_contract = msg.sender; // Imposta il proprietario del contratto
     }
 
