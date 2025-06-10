@@ -52,10 +52,9 @@ async function interact2() {
         }
         */
        await voucherManagerContract.methods.setAuthorizedAddress(
-            ReviewManagerAddress,
             TokenManagerAddress,
             SupportReviewManagerAddress
-        ).send({ from: ownerAccount });
+        ).send({ from: accounts[0] });
         // 3.b Prova di pagamento con saldo sufficiente
         try {
             await tokenManagerContract.methods.pay(ristorante, prezzo, 0).send({
@@ -67,6 +66,7 @@ async function interact2() {
         } catch (error) {
             console.error('Errore:', error);
         }
+        
     } catch (error) {
         console.error('Errore nella funzione interact2:', error);
     }
