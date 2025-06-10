@@ -229,7 +229,7 @@
     "inputs": [
       {
         "internalType": "address",
-        "name": "_reviewManager",
+        "name": "_supportReviewManager",
         "type": "address"
       }
     ],

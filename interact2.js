@@ -51,22 +51,9 @@ async function interact2() {
             console.log("Errore atteso: saldo insufficiente");
         }
         */
-       await voucherManagerContract.methods.setAuthorizedAddress(
-            TokenManagerAddress,
-            SupportReviewManagerAddress
-        ).send({ from: accounts[0] });
-        // 3.b Prova di pagamento con saldo sufficiente
-        try {
-            await tokenManagerContract.methods.pay(ristorante, prezzo, 0).send({
-                from: utente,
-                value: prezzo,
-                gas: 6000000
-            });
-            console.log("Pagamento riuscito con saldo sufficiente");
-        } catch (error) {
-            console.error('Errore:', error);
-        }
-        
+
+        await tokenManagerContract.methods.pay(ristorante, amount, 0).send({ from: cliente, value: web3.utils.toWei("5", "ether"), gas: gasFee });
+
     } catch (error) {
         console.error('Errore nella funzione interact2:', error);
     }

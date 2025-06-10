@@ -11,13 +11,15 @@ contract TokenManager {
 
     mapping(address => mapping(address => uint256)) private tokens;
 
+    address private owner;
     ActorRegistry public actorRegistry;
     VoucherManager public voucherManager;
-    address private reviewManager;
+    address private supportReviewManager;
 
     constructor(address _actorRegistry, address _voucherManager) {
         actorRegistry = ActorRegistry(_actorRegistry);
         voucherManager = VoucherManager(_voucherManager);
+        owner = msg.sender;
     }
 
     modifier onlySender(address sender) {
@@ -30,8 +32,9 @@ contract TokenManager {
     event TokenDecremented(address indexed user, address indexed restaurant, uint256 newCount);
     event VoucherUsed(uint256 indexed voucherID, address indexed user, address indexed restaurant);
 
-    function setAuthorizedAddress(address _reviewManager) public {
-        reviewManager = _reviewManager;
+    function setAuthorizedAddress(address _supportReviewManager) external {
+        require(msg.sender == owner, "you are not authorized");
+        supportReviewManager = _supportReviewManager;
     }
 
     function incrementTokenCounter(address Uaddress, address Raddress) private {
@@ -39,8 +42,8 @@ contract TokenManager {
         emit TokenIncremented(Uaddress, Raddress, tokens[Uaddress][Raddress]);
     }
 
-    function decrementTokenCounter(address Uaddress, address Raddress) external {   //require anche qui, solo ReviewManager
-        require(msg.sender == reviewManager, "not authorized");
+    function decrementTokenCounter(address Uaddress, address Raddress) external {
+        require(msg.sender == supportReviewManager, "not authorized");
         require(getTokenCountUserPerRestaurant(Uaddress, Raddress) > 0, "Insufficient tokens");
         tokens[Uaddress][Raddress]--;
         emit TokenDecremented(Uaddress, Raddress, tokens[Uaddress][Raddress]);

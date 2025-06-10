@@ -4,19 +4,12 @@ pragma solidity ^0.8.0;
 import "./CertifiedAuthority.sol";
 
 contract ActorRegistry {
-    address public owner;
+    
     CertifiedAuthority public certifiedAuthority;
     mapping(address => bool) public verifiedSellers;
 
-    // Modifiers
-    modifier onlyOwner() {
-        require(msg.sender == owner, "Not contract owner");
-        _;
-    }
-
     // Constructor
     constructor(address _certifiedAuthority) {
-        owner = msg.sender;
         certifiedAuthority = CertifiedAuthority(_certifiedAuthority);
     }
 

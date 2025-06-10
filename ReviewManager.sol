@@ -18,6 +18,7 @@ contract ReviewManager {
     mapping(address => mapping(uint256 => bool)) public hasVoted;
 
     uint256 public reviewCounter;
+
     SupportReviewManager public supportReviewManager;
 
     event RestaurantReviews(address Raddress, uint256[] reviewIDs);
@@ -70,7 +71,6 @@ contract ReviewManager {
 
     function deleteReview(uint256 reviewID) public onlyAuthor(reviewID) {
         delete reviews[reviewID];
-
         supportReviewManager.deleteEvent(reviewID);
     }
 

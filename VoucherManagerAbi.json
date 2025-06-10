@@ -62,7 +62,7 @@
       },
       {
         "internalType": "address",
-        "name": "owner",
+        "name": "customer",
         "type": "address"
       },
       {

@@ -14,6 +14,7 @@ contract SupportReviewManager {
         uint256 timestamp;
     }
 
+    address private owner;
     address private reviewManager;
     ActorRegistry public actorRegistry;
     VoucherManager public voucherManager;
@@ -28,9 +29,11 @@ contract SupportReviewManager {
         actorRegistry = ActorRegistry(_actorRegistry);
         voucherManager = VoucherManager(_voucherManager);
         tokenManager = TokenManager(_tokenManager);
+        owner = msg.sender;
     }
 
-    function setAuthorized(address _reviewManager) external {
+    function setAuthorizedAddress(address _reviewManager) external {
+        require(msg.sender == owner, "you are not authorized");
         reviewManager = _reviewManager;
     }
 

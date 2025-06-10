@@ -25,16 +25,16 @@ contract VoucherManager {
     constructor(address _actorRegistry) {
         actorRegistry = ActorRegistry(_actorRegistry);
         owner = msg.sender;
-        counter = 0;
+        counter = 1;
     }
 
     modifier onlyTokenManager {
-        require(msg.sender == tokenManager, "Only TokenManager can perform this operation");
+        require(msg.sender == tokenManager, "not authorized");
         _;
     }
 
     modifier onlyOwner {
-        require(msg.sender == owner, "Only Owner can perform this operation");
+        require(msg.sender == owner, "not authorized");
         _;
     }
 
@@ -46,7 +46,7 @@ contract VoucherManager {
     // Funzione interna per emettere un voucher
     function emitVoucher(address _customer, address _restaurant, uint256 _discount, string memory _metadataURI) external {
         //check per verificare l'identità dell'utente
-        require(msg.sender == supportReviewManager, "Solo il support review manager");
+        require(msg.sender == supportReviewManager, "not authorized");
         require(actorRegistry.verifySeller(_restaurant), "restaurant not present");
         require(_discount > 0, "it can't be applied");
         vouchers[counter] = Voucher(counter, _customer, _restaurant, _discount, true, _metadataURI);
@@ -67,8 +67,10 @@ contract VoucherManager {
     }
 
     //Funzione per verificare se il voucher è applicabile
-    function applyVoucher(uint256 voucherID, address owner, address restaurant, uint256 amount) external view onlyTokenManager returns (uint256){
-        require(owner == vouchers[voucherID].owner, "You are not the owner of the NFT");
+    function applyVoucher(uint256 voucherID, address customer, address restaurant, uint256 amount) external view onlyTokenManager returns (uint256){
+        if(voucherID == 0)
+            return amount;
+        require(customer == vouchers[voucherID].owner, "You are not the owner of the NFT");
         require(restaurant == vouchers[voucherID].restaurant, "The restaurant associated with the NFT is not the same as the one you are paying");
         require(actorRegistry.verifySeller(restaurant), "The restaurant referenced by the NFT is not part of the affiliated system");
         require(vouchers[voucherID].discount <= amount, "You cannot use the voucher");
