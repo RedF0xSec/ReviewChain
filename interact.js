@@ -5,25 +5,19 @@ const fs = require('fs');
 const web3 = new Web3('ws://localhost:7545');
 
 // Load ABI
-const TokenManagerAbi = JSON.parse(fs.readFileSync('TokenManagerAbi.json', 'utf8'));
 const ActorRegistryAbi = JSON.parse(fs.readFileSync('ActorRegistryAbi.json', 'utf8'));
 const CertifiedAuthorityAbi = JSON.parse(fs.readFileSync('CertifiedAuthorityAbi.json', 'utf8'));
-const ReviewManagerAbi = JSON.parse(fs.readFileSync('ReviewManagerAbi.json', 'utf8'));
-const VoucherManagerAbi = JSON.parse(fs.readFileSync('VoucherManagerAbi.json', 'utf8'));
+
 
 // Set contract addresses
-const CertifiedAuthorityAddress = '0x66BF2dac555afD23Bb2eb727bB6d9BC986A777EE';
-const ActorRegistryAddress = '0x7C0f0c523d73F4E50537dF7373f8cD165b67CD00';
-const VoucherManagerAddress = '0x0AE931Bd601b938BD5Aa8F085aDcb16fFddC8840';
-const TokenManagerAddress = '0x1dD84Da91b54CA6bcF7b38CD97885f7c7bB25624';
-const ReviewManagerAddress = '0x3b2b6d420e2EEa4511E4589ed8BbA538f39C50f6';
+const CertifiedAuthorityAddress = '0x4832e860edb233d9185dBCDABA93A180C2fa0Ef8';
+const ActorRegistryAddress = '0x9a2020D9dde843B74a57c34c792280145C022d84';
 
 
-const tokenManagerContract = new web3.eth.Contract(TokenManagerAbi, TokenManagerAddress);
+
 const actorRegistryContract = new web3.eth.Contract(ActorRegistryAbi, ActorRegistryAddress);
 const certifiedAuthorityContract = new web3.eth.Contract(CertifiedAuthorityAbi, CertifiedAuthorityAddress);
-const reviewManagerContract = new web3.eth.Contract(ReviewManagerAbi, ReviewManagerAddress);
-const voucherManagerContract = new web3.eth.Contract(VoucherManagerAbi, VoucherManagerAddress);
+
 
 async function interactWithContracts() {
 
@@ -33,7 +27,7 @@ async function interactWithContracts() {
         
         const ristorante = accounts[1];
 
-        // 2. Registra il ristorante
+        // Registra il ristorante
         const piva = "IT12345678901";
 	
 	    //ristorante con partita iva valida
@@ -55,18 +49,17 @@ async function interactWithContracts() {
     }
 
     //sezione test errori
-    try{
+ /*   try{
         //ristorante valido ma con partita iva non valida
         await actorRegistryContract.methods.addSeller(accounts[5], "5").send({ from: accounts[0] });
         console.log("Ristorante registrato con partita IVA non valida");
     }catch(error){
+        console.log("Errore atteso: ristorante con partita IVA non valida");
         console.error('Errore:', error);
         // Stampa dettagli aggiuntivi dell'errore
         console.error('Dettagli dell\'errore:', JSON.stringify(error, null, 2));
     }
-
-    //🦆🦆
-
+*/
 }
 
 // Esegui lo script

@@ -25,7 +25,7 @@ const input = {
         'VoucherManager.sol': { content: voucherManagerSource },
         'TokenManager.sol': { content: tokenManagerSource },
         'ReviewManager.sol': { content: reviewManagerSource },
-	'SupportReviewManager.sol': { content: supportReviewManagerSource},
+	    'SupportReviewManager.sol': { content: supportReviewManagerSource},
     },
     settings: {
         outputSelection: {

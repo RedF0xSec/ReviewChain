@@ -166,12 +166,12 @@
     "inputs": [
       {
         "internalType": "address",
-        "name": "_reviewManager",
+        "name": "_tokenManager",
         "type": "address"
       },
       {
         "internalType": "address",
-        "name": "_tokenManager",
+        "name": "_supportReviewManager",
         "type": "address"
       }
     ],

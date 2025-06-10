@@ -16,13 +16,15 @@ contract VoucherManager {
     uint256 private counter; //per l'id progressivo dei voucher
     mapping(uint256 => Voucher) public vouchers;    //voucher associato all'id
     ActorRegistry private actorRegistry;
-    address private reviewManager;
     address private tokenManager;
+    address private supportReviewManager;
+    address private owner;
 
     event VoucherEmitted(uint256 indexed id, address indexed customer, address indexed restaurant, uint256 discount, bool available, string metadataURI);
     
     constructor(address _actorRegistry) {
         actorRegistry = ActorRegistry(_actorRegistry);
+        owner = msg.sender;
         counter = 0;
     }
 
@@ -31,20 +33,26 @@ contract VoucherManager {
         _;
     }
 
-    function setAuthorizedAddress(address _reviewManager, address _tokenManager) public {
-        reviewManager = _reviewManager;
+    modifier onlyOwner {
+        require(msg.sender == owner, "Only Owner can perform this operation");
+        _;
+    }
+
+    function setAuthorizedAddress( address _tokenManager, address _supportReviewManager) external onlyOwner{
         tokenManager = _tokenManager;
+        supportReviewManager = _supportReviewManager;
     }
 
     // Funzione interna per emettere un voucher
     function emitVoucher(address _customer, address _restaurant, uint256 _discount, string memory _metadataURI) external {
         //check per verificare l'identità dell'utente
-        //require(msg.sender == reviewManager, "Solo il review manager puo richiedere l'emissione di un voucher");
+        require(msg.sender == supportReviewManager, "Solo il support review manager");
         require(actorRegistry.verifySeller(_restaurant), "restaurant not present");
         require(_discount > 0, "it can't be applied");
         vouchers[counter] = Voucher(counter, _customer, _restaurant, _discount, true, _metadataURI);
+        emit VoucherEmitted(counter, _customer, _restaurant, _discount, true, _metadataURI);
         counter++;
-        emit VoucherEmitted(counter--, _customer, _restaurant, _discount, true, _metadataURI);
+
     }
 
     //Funzione che restituisce il vaucher
