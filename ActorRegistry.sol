@@ -4,9 +4,10 @@ pragma solidity ^0.8.0;
 import "./CertifiedAuthority.sol";
 
 contract ActorRegistry {
-    
     CertifiedAuthority public certifiedAuthority;
     mapping(address => bool) public verifiedSellers;
+
+    event RestaurantAdded(address restaurant);
 
     // Constructor
     constructor(address _certifiedAuthority) {
@@ -17,6 +18,8 @@ contract ActorRegistry {
     function addSeller(address restaurant, string calldata piva) public {
         require(certifiedAuthority.isPivaValid(piva), "piva not valid");
         verifiedSellers[restaurant] = true;
+        emit RestaurantAdded(restaurant);
+        
     }
 
     // Controlla se un ristorante è verificato

@@ -9,18 +9,12 @@ contract TokenManager {
     string public symbol = "BTE";
     uint8 public decimals = 18;
 
-    mapping(address => mapping(address => uint256)) private tokens;
-
-    address private owner;
     ActorRegistry public actorRegistry;
     VoucherManager public voucherManager;
     address private supportReviewManager;
+    address private owner;
 
-    constructor(address _actorRegistry, address _voucherManager) {
-        actorRegistry = ActorRegistry(_actorRegistry);
-        voucherManager = VoucherManager(_voucherManager);
-        owner = msg.sender;
-    }
+    mapping(address => mapping(address => uint256)) private tokens;
 
     modifier onlySender(address sender) {
         require(msg.sender == sender, "E400");
@@ -31,6 +25,12 @@ contract TokenManager {
     event TokenIncremented(address indexed user, address indexed restaurant, uint256 newCount);
     event TokenDecremented(address indexed user, address indexed restaurant, uint256 newCount);
     event VoucherUsed(uint256 indexed voucherID, address indexed user, address indexed restaurant);
+
+    constructor(address _actorRegistry, address _voucherManager) {
+        actorRegistry = ActorRegistry(_actorRegistry);
+        voucherManager = VoucherManager(_voucherManager);
+        owner = msg.sender;
+    }
 
     function setAuthorizedAddress(address _supportReviewManager) external {
         require(msg.sender == owner, "E401");

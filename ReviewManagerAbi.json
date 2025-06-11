@@ -11,25 +11,6 @@
     "type": "constructor"
   },
   {
-    "anonymous": false,
-    "inputs": [
-      {
-        "indexed": false,
-        "internalType": "address",
-        "name": "Raddress",
-        "type": "address"
-      },
-      {
-        "indexed": false,
-        "internalType": "uint256[]",
-        "name": "reviewIDs",
-        "type": "uint256[]"
-      }
-    ],
-    "name": "RestaurantReviews",
-    "type": "event"
-  },
-  {
     "inputs": [
       {
         "internalType": "address",
@@ -94,8 +75,14 @@
       }
     ],
     "name": "getRestaurantReviewsByAddress",
-    "outputs": [],
-    "stateMutability": "nonpayable",
+    "outputs": [
+      {
+        "internalType": "uint256[]",
+        "name": "",
+        "type": "uint256[]"
+      }
+    ],
+    "stateMutability": "view",
     "type": "function"
   },
   {

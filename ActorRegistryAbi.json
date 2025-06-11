@@ -11,6 +11,19 @@
     "type": "constructor"
   },
   {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": false,
+        "internalType": "address",
+        "name": "restaurant",
+        "type": "address"
+      }
+    ],
+    "name": "RestaurantAdded",
+    "type": "event"
+  },
+  {
     "inputs": [
       {
         "internalType": "address",

@@ -1,7 +1,7 @@
 const { Web3 } = require('web3');
 const fs = require('fs');
 
-const web3 = new Web3('http://localhost:7545');
+const web3 = new Web3('ws://localhost:7545');
 
 const TokenManagerAbi = JSON.parse(fs.readFileSync('TokenManagerAbi.json', 'utf8'));
 const ReviewManagerAbi = JSON.parse(fs.readFileSync('ReviewManagerAbi.json', 'utf8'));
@@ -9,11 +9,11 @@ const ActorRegistryAbi = JSON.parse(fs.readFileSync('ActorRegistryAbi.json', 'ut
 const VoucherManagerAbi = JSON.parse(fs.readFileSync('VoucherManagerAbi.json', 'utf8'));
 const SupportReviewManagerAbi = JSON.parse(fs.readFileSync('SupportReviewManagerAbi.json', 'utf8'));
 
-const ActorRegistryAddress = '0x463d79432626c039EB4F31947e6930C0E051F9FB';
-const VoucherManagerAddress = '0xc4CE90a16B51eF3E761F459a66319B767c1F5BC0';
-const TokenManagerAddress = '0x22598aBfa19280Ad21F4BBaD6bCE2b05A293b391';
-const SupportReviewManagerAddress = '0x300646626040716Ae802C120D48A8B857C85ec8d';
-const ReviewManagerAddress = '0x88d8Af0D42300D28dC59C19Ea46835838940958D';
+const ActorRegistryAddress = '0xE8956f40c1D10A5795e6fF1570F4A3FF4D167e78';
+const VoucherManagerAddress = '0xc335C5B19496b329550Ec23045F979AF571E0e52';
+const TokenManagerAddress = '0xc3162e223F8C8719Ba7804C21c62427d03a73235';
+const SupportReviewManagerAddress = '0x32afB62De4Cf75ee2d597DE9D8157D1228A35Bb2';
+const ReviewManagerAddress = '0xffA487Ae71eda28eaF4C777CD608000532c7E377';
 
 const tokenManagerContract = new web3.eth.Contract(TokenManagerAbi, TokenManagerAddress);
 const reviewManagerContract = new web3.eth.Contract(ReviewManagerAbi, ReviewManagerAddress);
@@ -21,6 +21,10 @@ const actorRegistryContract = new web3.eth.Contract(ActorRegistryAbi, ActorRegis
 const voucherManagerContract = new web3.eth.Contract(VoucherManagerAbi, VoucherManagerAddress);
 const supportReviewManagerContract = new web3.eth.Contract(SupportReviewManagerAbi, SupportReviewManagerAddress);
 
+
+// ##################################################################
+//   Funzione per impostare gli indirizzi autorizzati nei contratti 
+// ##################################################################
 async function setup() {
         const accounts = await web3.eth.getAccounts();
         const owner = accounts[0];
@@ -34,62 +38,50 @@ async function setup() {
         await tokenManagerContract.methods.setAuthorizedAddress(SupportReviewManagerAddress).send({ from: owner });
 
         await supportReviewManagerContract.methods.setAuthorizedAddress(ReviewManagerAddress).send({ from: owner });
-}
+    }       
 
-async function setupEventListeners() {
-    // Nota: async si potrebbe anche togliere perchè non ci sono await in questa funzione
-
-}
-
+// ##################################################################
+//         Funzione per testare il pagamento e la recensione
+// ##################################################################
 async function pagamentoRecensione() {
     const accounts = await web3.eth.getAccounts();
     const ristorante = accounts[1];
     const utente = accounts[2];
     const prezzo = web3.utils.toWei('1', 'ether');
+    let gasFee = 1000000; // Imposta una gas fee fissa per il test
 
-    //Listeners to the payment event
-    voucherManagerContract.events.VoucherEmitted().on('data', (event) => {
-        console.log('Emitted Voucher Event:', event.returnValues);
+    // Listeners
+    actorRegistryContract.events.RestaurantAdded().on('data', event => {
+        console.log('[EVENT] RestaurantAdded:', event.returnValues);
     });
 
-    tokenManagerContract.events.TokenIncremented().on('data', (event) => {
-        console.log('Token incremented Event:', event.returnValues);
-    });
-    
-    supportReviewManagerContract.events.ReviewAdded().on('data', (event) => {
-        console.log('Review added Event:', event.returnValues);
-    });
-
-    reviewManagerContract.events.RestaurantReviews().on('data', (event) => {
-        console.log('Restaurant Reviews Event:', event.returnValues);
-    });
-
-    // Errore: ristorante non registrato
+    // 1. Errore: ristorante non registrato
     try {
         await tokenManagerContract.methods.pay(ristorante, prezzo, 0).send({ from: utente, value: prezzo });
     } catch (e) {
         console.log("Errore atteso: ristorante non registrato");
     }
 
-    // Registra il ristorante
+    // 2. Registra il ristorante
     const piva = "IT12345678901";
     await actorRegistryContract.methods.addSeller(ristorante, piva).send({ from: accounts[0] });
     console.log("Ristorante registrato con partita IVA:", piva);
     gasFee = 1000000; // Imposta una gas fee fissa per il test
 
+    // 3. Prova di pagamento
     try{
         await tokenManagerContract.methods.pay(ristorante, prezzo, 0).send({ from: utente, value: prezzo, gas: gasFee });
         console.log("Pagamento effettuato con successo");
     }
     catch (e) {
-        console.log("Errore atteso: saldo insufficiente");
+        console.log("Errore atteso: saldo insufficiente"); //per provare questo errore, basta mettere 0 come value
     }
 
-    // 8. Controllo token ricevuto
+    // 4. Controllo token ricevuto
     const tokenCount = await tokenManagerContract.methods.getTokenCountUserPerRestaurant(utente, ristorante).call();
     console.log("Token ricevuti dall'utente per il ristorante:", tokenCount);
 
-    // 9. Lascio una recensione (solo se ho almeno 1 token)
+    // 5. Lascio una recensione (solo se ho almeno 1 token)
     if (tokenCount > 0) {
         const content = "Ottimo ristorante!";
         await reviewManagerContract.methods.addReview(ristorante, content).send({ from: utente, gas: 6000000 });
@@ -102,74 +94,39 @@ async function pagamentoRecensione() {
         }
     }
 
-    // 10. Controllo se la recensione è stata aggiunta
+    // 6. Controllo se la recensione è stata aggiunta
     await reviewManagerContract.methods.getRestaurantReviewsByAddress(ristorante).send({ from: utente, gas: 6000000});
     
 }
 
-async function testModificaDeleteRecensione() {
-    const accounts = await web3.eth.getAccounts();
-    const utente = accounts[2];
-    const altroUtente = accounts[3];
-    const ristorante = accounts[1];
-
-    // Recupera la prima recensione del ristorante
-    const reviewIDs = await reviewManagerContract.methods.restaurant_reviews(ristorante).call();
-    const reviewID = reviewIDs[0];
-
-    // Modifica della recensione da parte dell’autore (successo)
-    try {
-        await reviewManagerContract.methods.modifyReview(reviewID, "Recensione aggiornata!").send({ from: utente, gas: 6000000 });
-        console.log("Modifica recensione da parte dell'autore: SUCCESSO");
-    } catch (e) {
-        console.log("Errore inatteso nella modifica da parte dell'autore");
-    }
-
-    // Modifica della recensione da parte di un altro utente (errore atteso)
-    try {
-        await reviewManagerContract.methods.modifyReview(reviewID, "Tentativo di modifica non autorizzato").send({ from: altroUtente, gas: 6000000 });
-    } catch (e) {
-        console.log("Errore atteso: modifica recensione non propria");
-    }
-
-    // Cancellazione della recensione da parte di un altro utente (errore atteso)
-    try {
-        await reviewManagerContract.methods.deleteReview(reviewID).send({ from: altroUtente, gas: 6000000 });
-    } catch (e) {
-        console.log("Errore atteso: cancellazione recensione non propria");
-    }
-
-    // Cancellazione della recensione da parte dell’autore (successo)
-    try {
-        await reviewManagerContract.methods.deleteReview(reviewID).send({ from: utente, gas: 6000000 });
-        console.log("Cancellazione recensione da parte dell'autore: SUCCESSO");
-    } catch (e) {
-        console.log("Errore inatteso nella cancellazione da parte dell'autore");
-    }
-}
-
+// ##################################################################
+//          Funzione per testare il like alla recensione
+// ##################################################################
 async function likeRecensione() {
     let reviewID = 0;
     let voucherID = 0;
 
-    //Listeners to the payment event
+    // Listeners
     supportReviewManagerContract.events.ReviewLiked().on('data', (event) => {
-        console.log('Review Liked Event:', event.returnValues);
+        console.log('[EVENT] Review Liked:', event.returnValues);
     });
-
-    //Listen to the payment event
+    
     tokenManagerContract.events.Payment().on('data', (event) => {
-        console.log('CPayment Event:', event.returnValues);
+        console.log('[EVENT] Payment:', event.returnValues);
     });
 
     supportReviewManagerContract.events.ReviewAdded().on('data', (event) => {
-        console.log('Review added Event:', event.returnValues);
+        console.log('[EVENT] Review added:', event.returnValues);
         reviewID = event.returnValues.reviewID; // Salva l'ID della recensione
     });
 
     voucherManagerContract.events.VoucherEmitted().on('data', (event) => {
-        console.log('Emitted Voucher Event:', event.returnValues);
+        console.log('[EVENT] Emitted Voucher:', event.returnValues);
         voucherID = event.returnValues.id; // Salva l'ID del voucher
+    });
+
+    actorRegistryContract.events.RestaurantAdded().on('data', event => {
+        console.log('[EVENT] RestaurantAdded:', event.returnValues);
     });
 
     try {
@@ -243,6 +200,86 @@ async function likeRecensione() {
     }
 }
 
+// ##################################################################
+// Funzione per testare la modifica e cancellazione della recensione
+// ##################################################################
+async function testModificaDeleteRecensione() {
+    const accounts = await web3.eth.getAccounts();
+    const utente = accounts[2];
+    const altroUtente = accounts[3];
+    const ristorante = accounts[1];
+    const prezzo = web3.utils.toWei('2', 'ether');
+
+    supportReviewManagerContract.events.ReviewModified().on('data', event => {
+        console.log('[EVENT] ReviewModified:', event.returnValues);
+    });
+    supportReviewManagerContract.events.ReviewDeleted().on('data', event => {
+        console.log('[EVENT] ReviewDeleted:', event.returnValues);
+    });
+    supportReviewManagerContract.events.ReviewLiked().on('data', event => {
+        console.log('[EVENT] ReviewLiked:', event.returnValues);
+    });
+
+    // 1. Registra il ristorante
+    const piva = "IT12345678901";
+    await actorRegistryContract.methods.addSeller(ristorante, piva).send({ from: accounts[0] });
+    console.log("Ristorante registrato con partita IVA:", piva);
+    gasFee = 1000000; // Imposta una gas fee fissa per il test
+
+    // 2. Prova di pagamento
+    try{
+        await tokenManagerContract.methods.pay(ristorante, prezzo, 0).send({ from: utente, value: prezzo, gas: gasFee });
+        console.log("Pagamento effettuato con successo");
+    }
+    catch (e) {
+        console.log("Errore atteso: saldo insufficiente"); //per provare questo errore, basta mettere 0 come value
+    }
+
+    // 5. Lascio una recensione (solo se ho almeno 1 token)
+     try {
+        await reviewManagerContract.methods.addReview(ristorante, "Recensione senza token").send({ from: utente, gas: 6000000 });
+    } catch (e) {
+        console.log("Errore atteso: impossibile lasciare recensione senza token");
+    }
+
+    // 6. Recupera la prima recensione del ristorante
+    const reviewIDs = await reviewManagerContract.methods.getRestaurantReviewsByAddress(ristorante).call();
+    console.log("Recensioni del ristorante:", reviewIDs);
+    const reviewID = reviewIDs[0];
+
+    // 7. Modifica della recensione da parte dell’autore (successo)
+    try {
+        await reviewManagerContract.methods.modifyReview(reviewID, "Recensione aggiornata!").send({ from: utente, gas: 6000000 });
+        console.log("Modifica recensione da parte dell'autore: SUCCESSO");
+    } catch (e) {
+        console.log("Errore inatteso nella modifica da parte dell'autore");
+    }
+
+    // 8. Modifica della recensione da parte di un altro utente (errore atteso)
+    try {
+        await reviewManagerContract.methods.modifyReview(reviewID, "Tentativo di modifica non autorizzato").send({ from: altroUtente, gas: 6000000 });
+    } catch (e) {
+        console.log("Errore atteso: modifica recensione non propria");
+    }
+
+    // 9. Cancellazione della recensione da parte di un altro utente (errore atteso)
+    try {
+        await reviewManagerContract.methods.deleteReview(reviewID).send({ from: altroUtente, gas: 6000000 });
+    } catch (e) {
+        console.log("Errore atteso: cancellazione recensione non propria");
+    }
+
+    // 10. Cancellazione della recensione da parte dell’autore (successo)
+    try {
+        await reviewManagerContract.methods.deleteReview(reviewID).send({ from: utente, gas: 6000000 });
+        console.log("Cancellazione recensione da parte dell'autore: SUCCESSO");
+    } catch (e) {
+        console.log("Errore inatteso nella cancellazione da parte dell'autore");
+    }
+}
+
+
+// Funzione per testare i casi di errore
 async function testErrorCases() {
     const accounts = await web3.eth.getAccounts();
     const utente = accounts[2];
@@ -273,8 +310,6 @@ async function testErrorCases() {
     }
 
     // 4. Prova a modificare una recensione dopo il limite temporale (simulato)
-    // Nota: Per testare davvero il limite temporale dovresti manipolare il timestamp nel contratto o usare un testnet che lo permette.
-    // Qui simuliamo solo la chiamata e il catch.
     try {
         await reviewManagerContract.methods.modifyReview(reviewID, "Cambio dopo 24h").send({ from: utente, gas: 6000000 });
     } catch (e) {
@@ -301,12 +336,11 @@ async function testErrorCases() {
 }
 
 async function main() {
-    //await setupEventListeners();
     await setup();
-    //await pagamentoRecensione();
+    await pagamentoRecensione();
     await likeRecensione();
+    await testModificaDeleteRecensione(); 
     //await testErrorCases();
-    //await testModificaDeleteRecensione(); 
 }
 
 

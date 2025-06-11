@@ -21,8 +21,6 @@ contract ReviewManager {
 
     SupportReviewManager public supportReviewManager;
 
-    event RestaurantReviews(address Raddress, uint256[] reviewIDs);
-
     modifier onlyAuthor(uint256 reviewID) {
         require(reviews[reviewID].Uaddress == msg.sender, "E500");
         _;
@@ -74,8 +72,8 @@ contract ReviewManager {
         supportReviewManager.deleteEvent(reviewID);
     }
 
-    function getRestaurantReviewsByAddress(address Raddress) external {
-        emit RestaurantReviews(Raddress, restaurant_reviews[Raddress]);
+    function getRestaurantReviewsByAddress(address Raddress) external view returns (uint256[] memory) {
+        return restaurant_reviews[Raddress];
     }
 
     function getNumberofLikes(uint256 reviewID) public view returns (uint256) {
