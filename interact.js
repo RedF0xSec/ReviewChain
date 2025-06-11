@@ -336,10 +336,21 @@ async function testErrorCases() {
 }
 
 async function main() {
+    console.log("Inizio test interazione con i contratti...");
     await setup();
+    console.log("Setup completato");
+    console.log("##########################################################");
+    console.log("Inizio test pagamento e recensione...");
     await pagamentoRecensione();
+    console.log("Test pagamento e recensione completato");
+    console.log("##########################################################");
+    console.log("Inizio test like alla recensione...");
     await likeRecensione();
+    console.log("Test like alla recensione completato");
+    console.log("##########################################################");
+    console.log("Inizio test modifica e cancellazione recensione...");
     await testModificaDeleteRecensione(); 
+    console.log("Test modifica e cancellazione recensione completato");
     //await testErrorCases();
 }
 
