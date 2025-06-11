@@ -23,7 +23,7 @@ contract TokenManager {
     }
 
     modifier onlySender(address sender) {
-        require(msg.sender == sender, "Only the sender can perform this operation");
+        require(msg.sender == sender, "E400");
         _;
     }
 
@@ -33,7 +33,7 @@ contract TokenManager {
     event VoucherUsed(uint256 indexed voucherID, address indexed user, address indexed restaurant);
 
     function setAuthorizedAddress(address _supportReviewManager) external {
-        require(msg.sender == owner, "you are not authorized");
+        require(msg.sender == owner, "E401");
         supportReviewManager = _supportReviewManager;
     }
 
@@ -43,8 +43,8 @@ contract TokenManager {
     }
 
     function decrementTokenCounter(address Uaddress, address Raddress) external {
-        require(msg.sender == supportReviewManager, "not authorized");
-        require(getTokenCountUserPerRestaurant(Uaddress, Raddress) > 0, "Insufficient tokens");
+        require(msg.sender == supportReviewManager, "E401");
+        require(getTokenCountUserPerRestaurant(Uaddress, Raddress) > 0, "E402");
         tokens[Uaddress][Raddress]--;
         emit TokenDecremented(Uaddress, Raddress, tokens[Uaddress][Raddress]);
     }
@@ -54,10 +54,11 @@ contract TokenManager {
     }
 
     function pay(address receiver, uint256 amount, uint256 voucherID) external payable onlySender(msg.sender) {
-        require(actorRegistry.verifySeller(receiver), "The restaurant is not part of the affiliated system");
+        require(actorRegistry.verifySeller(receiver), "E403");
         uint256 amountToPay = voucherManager.applyVoucher(voucherID, msg.sender, receiver, amount);
-        require(msg.value >= amountToPay, "Insufficient balance for payment");   
-        payable(receiver).transfer(amountToPay);   
+        require(msg.value >= amountToPay, "E404");   
+        payable(receiver).transfer(amountToPay); 
+        payable(msg.sender).transfer(msg.value - amountToPay);   
         incrementTokenCounter(msg.sender, receiver);
         voucherManager.invalidateVoucher(voucherID);
         emit VoucherUsed(voucherID, msg.sender, receiver);

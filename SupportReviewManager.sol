@@ -6,14 +6,6 @@ import "./TokenManager.sol";
 import "./ActorRegistry.sol";
 
 contract SupportReviewManager {
-    struct Review {
-        address Uaddress;
-        address Raddress;
-        string content;
-        uint256 numLikes;
-        uint256 timestamp;
-    }
-
     address private owner;
     address private reviewManager;
     ActorRegistry public actorRegistry;
@@ -51,15 +43,16 @@ contract SupportReviewManager {
         emit ReviewAdded(reviewID, Uaddress, Raddress, content);
     }
 
-    function like(address Uaddress, address Raddress, uint256 reviewID, uint256 numLikes) external onlyReviewManager{
+    function like(address Uaddress, address Raddress, uint256 reviewID, uint256 numLikes, address owner) external onlyReviewManager{
         require(tokenManager.getTokenCountUserPerRestaurant(Uaddress, Raddress) > 0, "You need at least one token to leave a review");
         emit ReviewLiked(reviewID, Uaddress);
-        emitV(Uaddress, Raddress, numLikes);
+        emitV(owner, Raddress, numLikes);
     }
 
     function emitV(address Uaddress, address Raddress, uint256 numLikes) private{
+        numLikes++;
         if(numLikes == 3)
-            voucherManager.emitVoucher(Uaddress, Raddress, 2, "discount");
+            voucherManager.emitVoucher(Uaddress, Raddress, 2000000000000000000, "discount");
     }
 
     function modifyEvent(uint256 reviewID, string memory content) external onlyReviewManager{

@@ -14,7 +14,7 @@ contract ReviewManager {
 
     mapping(uint256 => Review) public reviews;
     mapping(address => uint256[]) public restaurant_reviews;
-    mapping(address => mapping(address => uint256[])) public customer_for_restaurant_reviews;
+    //mapping(address => mapping(address => uint256[])) public customer_for_restaurant_reviews;
     mapping(address => mapping(uint256 => bool)) public hasVoted;
 
     uint256 public reviewCounter;
@@ -24,13 +24,13 @@ contract ReviewManager {
     event RestaurantReviews(address Raddress, uint256[] reviewIDs);
 
     modifier onlyAuthor(uint256 reviewID) {
-        require(reviews[reviewID].Uaddress == msg.sender, "You are not authorized");
+        require(reviews[reviewID].Uaddress == msg.sender, "E500");
         _;
     }
 
     //funzione per controllare se una recensione esiste
     function checkIfExist(uint256 reviewID) private view {
-        require(reviews[reviewID].Uaddress != address(0), "The review does not exist");
+        require(reviews[reviewID].Uaddress != address(0), "E501");
     }
 
     constructor(address _supportReviewManager) {
@@ -41,9 +41,9 @@ contract ReviewManager {
     function addReview(address Raddress, string memory content) public returns (uint256) {
         supportReviewManager.add(msg.sender, Raddress);
         reviewCounter++;
-        reviews[reviewCounter] = Review({Uaddress: msg.sender, Raddress: Raddress, content: content, numLikes: 0, timestamp: block.timestamp});
+        reviews[reviewCounter] = Review(msg.sender, Raddress, content, 0, block.timestamp);
         restaurant_reviews[Raddress].push(reviewCounter);
-        customer_for_restaurant_reviews[msg.sender][Raddress].push(reviewCounter);
+        //customer_for_restaurant_reviews[msg.sender][Raddress].push(reviewCounter);
 
         supportReviewManager.addEvent(reviewCounter, msg.sender, Raddress, content);
         return reviewCounter;
@@ -51,8 +51,8 @@ contract ReviewManager {
 
     function likeReview(uint256 reviewID) public {
         checkIfExist(reviewID);
-        require(!hasVoted[msg.sender][reviewID], "You have already voted on this review");
-        supportReviewManager.like(msg.sender, reviews[reviewID].Raddress, reviewID, reviews[reviewID].numLikes);
+        require(!hasVoted[msg.sender][reviewID], "E502");
+        supportReviewManager.like(msg.sender, reviews[reviewID].Raddress, reviewID, reviews[reviewID].numLikes, reviews[reviewID].Uaddress);
 
         reviews[reviewID].numLikes++;
         hasVoted[msg.sender][reviewID] = true;
@@ -61,7 +61,7 @@ contract ReviewManager {
 
     function modifyReview(uint256 reviewID, string memory newcontent) public onlyAuthor(reviewID) {
         checkIfExist(reviewID);
-        require(block.timestamp <= reviews[reviewID].timestamp + 1 days, "Maximum time to modify exceeded");
+        require(block.timestamp <= reviews[reviewID].timestamp + 1 days, "E503");
 
         reviews[reviewID].content = newcontent;
         reviews[reviewID].numLikes = 0;
@@ -74,7 +74,7 @@ contract ReviewManager {
         supportReviewManager.deleteEvent(reviewID);
     }
 
-    function getRestaurantReviewsByAddress(address Raddress) public {
+    function getRestaurantReviewsByAddress(address Raddress) external {
         emit RestaurantReviews(Raddress, restaurant_reviews[Raddress]);
     }
 

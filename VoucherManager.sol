@@ -44,15 +44,16 @@ contract VoucherManager {
     }
 
     // Funzione interna per emettere un voucher
-    function emitVoucher(address _customer, address _restaurant, uint256 _discount, string memory _metadataURI) external {
+    function emitVoucher(address _customer, address _restaurant, uint256 _discount, string memory _metadataURI) external 
+    {
         //check per verificare l'identità dell'utente
         require(msg.sender == supportReviewManager, "not authorized");
         require(actorRegistry.verifySeller(_restaurant), "restaurant not present");
         require(_discount > 0, "it can't be applied");
         vouchers[counter] = Voucher(counter, _customer, _restaurant, _discount, true, _metadataURI);
+
         emit VoucherEmitted(counter, _customer, _restaurant, _discount, true, _metadataURI);
         counter++;
-
     }
 
     //Funzione che restituisce il vaucher
