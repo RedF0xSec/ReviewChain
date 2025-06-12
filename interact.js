@@ -9,11 +9,11 @@ const ActorRegistryAbi = JSON.parse(fs.readFileSync('ActorRegistryAbi.json', 'ut
 const VoucherManagerAbi = JSON.parse(fs.readFileSync('VoucherManagerAbi.json', 'utf8'));
 const SupportReviewManagerAbi = JSON.parse(fs.readFileSync('SupportReviewManagerAbi.json', 'utf8'));
 
-const ActorRegistryAddress = '0xE8956f40c1D10A5795e6fF1570F4A3FF4D167e78';
-const VoucherManagerAddress = '0xc335C5B19496b329550Ec23045F979AF571E0e52';
-const TokenManagerAddress = '0xc3162e223F8C8719Ba7804C21c62427d03a73235';
-const SupportReviewManagerAddress = '0x32afB62De4Cf75ee2d597DE9D8157D1228A35Bb2';
-const ReviewManagerAddress = '0xffA487Ae71eda28eaF4C777CD608000532c7E377';
+const ActorRegistryAddress = '0xD0CB396aa49f70005dD8c8FA53Be8f35c0735533';
+const VoucherManagerAddress = '0x848522636563800e6FDbbD773099Dd86271bFD8e';
+const TokenManagerAddress = '0xEBc768d2718fa9038bd827Db7a78DB50F767e1E7';
+const SupportReviewManagerAddress = '0x6Fe80c66D7E01354a9d9AF4365366155864cCEC1';
+const ReviewManagerAddress = '0x8faf3912Bc07f70B769d034f608a73419958FbC7';
 
 const tokenManagerContract = new web3.eth.Contract(TokenManagerAbi, TokenManagerAddress);
 const reviewManagerContract = new web3.eth.Contract(ReviewManagerAbi, ReviewManagerAddress);
