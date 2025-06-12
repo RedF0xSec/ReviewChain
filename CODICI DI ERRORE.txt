@@ -1,0 +1,17 @@
+
+CODICI DI ERRORE
+Codice	Messaggio (commento)
+ERR01	P.IVA non valida
+ERR02	Mittente non autorizzato
+ERR03	Ristorante non verificato
+ERR04	Solo owner può chiamare
+ERR05	Token counter a zero (impossibile decrementare)
+ERR06	Importo insufficiente
+ERR07	Voucher non di proprietà
+ERR08	Voucher associato al ristorante sbagliato
+ERR09	Voucher già usato
+ERR10	Recensione non esiste
+ERR11	Solo autore recensione può modificare/eliminare
+ERR12	Tempo limite superato per modificare la recensione
+ERR13	Utente ha già votato
+ERR14	Solo ReviewManager autorizzato

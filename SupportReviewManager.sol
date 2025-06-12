@@ -25,17 +25,19 @@ contract SupportReviewManager {
     }
 
     function setAuthorizedAddress(address _reviewManager) external {
-        require(msg.sender == owner, "you are not authorized");
+        require(msg.sender == owner, "ERR04");
+        
         reviewManager = _reviewManager;
     }
 
     modifier onlyReviewManager {
-        require(msg.sender == reviewManager, "only ReviewManager is authorized");
+        require(msg.sender == reviewManager, "ERR14");
         _;
     }
 
     function add(address Uaddress, address Raddress) external onlyReviewManager{
-        require(actorRegistry.verifySeller(Raddress), "The restaurant is not part of the affiliated system");
+        require(actorRegistry.verifySeller(Raddress), "ERR03");
+        
         tokenManager.decrementTokenCounter(Uaddress, Raddress);
     }
 
@@ -44,7 +46,8 @@ contract SupportReviewManager {
     }
 
     function like(address Uaddress, address Raddress, uint256 reviewID, uint256 numLikes, address owner) external onlyReviewManager{
-        require(tokenManager.getTokenCountUserPerRestaurant(Uaddress, Raddress) > 0, "You need at least one token to leave a review");
+        require(tokenManager.getTokenCountUserPerRestaurant(Uaddress, Raddress) > 0, "ERR05");
+        
         emit ReviewLiked(reviewID, Uaddress);
         emitV(owner, Raddress, numLikes);
     }

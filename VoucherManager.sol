@@ -29,12 +29,12 @@ contract VoucherManager {
     }
 
     modifier onlyTokenManager {
-        require(msg.sender == tokenManager, "not authorized");
+        require(msg.sender == tokenManager, "ERR02");
         _;
     }
 
     modifier onlyOwner {
-        require(msg.sender == owner, "not authorized");
+        require(msg.sender == owner, "ERR04");
         _;
     }
 
@@ -47,9 +47,9 @@ contract VoucherManager {
     function emitVoucher(address _customer, address _restaurant, uint256 _discount, string memory _metadataURI) external 
     {
         //check per verificare l'identità dell'utente
-        require(msg.sender == supportReviewManager, "not authorized");
-        require(actorRegistry.verifySeller(_restaurant), "restaurant not present");
-        require(_discount > 0, "it can't be applied");
+        require(msg.sender == supportReviewManager, "ERR02");
+        require(actorRegistry.verifySeller(_restaurant), "ERR03");
+        require(_discount > 0, "ERR09");
         vouchers[counter] = Voucher(counter, _customer, _restaurant, _discount, true, _metadataURI);
 
         emit VoucherEmitted(counter, _customer, _restaurant, _discount, true, _metadataURI);
@@ -58,7 +58,8 @@ contract VoucherManager {
 
     //Funzione che restituisce il vaucher
     function getVoucher(uint256 idVaucher) external view returns (address customer, address restaurant, uint256 discount, bool available){
-        require(msg.sender == vouchers[idVaucher].owner, "not authorized");
+        require(msg.sender == vouchers[idVaucher].owner, "ERR02");
+        
         return (vouchers[idVaucher].owner, vouchers[idVaucher].restaurant, vouchers[idVaucher].discount, vouchers[idVaucher].available);
     }
 
@@ -71,11 +72,12 @@ contract VoucherManager {
     function applyVoucher(uint256 voucherID, address customer, address restaurant, uint256 amount) external view onlyTokenManager returns (uint256){
         if(voucherID == 0)
             return amount;
-        require(customer == vouchers[voucherID].owner, "You are not the owner of the NFT");
-        require(restaurant == vouchers[voucherID].restaurant, "The restaurant associated with the NFT is not the same as the one you are paying");
-        require(actorRegistry.verifySeller(restaurant), "The restaurant referenced by the NFT is not part of the affiliated system");
-        require(vouchers[voucherID].discount <= amount, "You cannot use the voucher");
-        require(vouchers[voucherID].available, "this voucher is already used");
+        require(customer == vouchers[voucherID].owner, "ERR07");
+        require(restaurant == vouchers[voucherID].restaurant, "ERR08");
+        require(actorRegistry.verifySeller(restaurant), "ERR03");
+        require(vouchers[voucherID].discount <= amount, "ERR09");
+        require(vouchers[voucherID].available, "ERR09");
+
         return amount - vouchers[voucherID].discount;
     }
 }
