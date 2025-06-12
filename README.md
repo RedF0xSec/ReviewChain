@@ -17,7 +17,7 @@ ReviewChain/
 ├── package.json                  # Node.js dependencies
 ├── package-lock.json             # NPM lockfile
 ├── README.md                     # Project documentation
-├── CODICI DI ERRORE.txt          # Error codes used by smart contracts
+├── ERRORCODES.md           # Error codes used by smart contracts
 │
 ├── ActorRegistry.sol             # Smart contract for actor registry
 ├── CertifiedAuthority.sol        # Certified authority logic
@@ -56,6 +56,21 @@ ReviewChain/
     │
     └── scripts/
         └── Test.js                    # Stress/functional testing script
+
+## ERROR CODES
+**ERR01** – Invalid VAT number
+**ERR02** – Unauthorized sender of the transaction
+**ERR03** – Restaurant not verified
+**ERR04** – Only the owner can call this function
+**ERR05** – Token counter is zero (cannot decrement)
+**ERR06** – Insufficient amount
+**ERR07** – Voucher not owned by caller
+**ERR08** – Voucher linked to the wrong restaurant
+**ERR09** – Voucher already used
+**ERR10** – Review does not exist
+**ERR11** – Only the review author can modify/delete it
+**ERR12** – Time limit exceeded to edit the review
+**ERR14** – Only authorized ReviewManager
 
 ### Authors
 This project was developed by Elena Falcone, Giuseppe Biscardi, and Luca Donnarumma
