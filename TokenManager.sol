@@ -15,10 +15,6 @@ contract TokenManager {
     address private owner;
     mapping(address => mapping(address => uint256)) private tokens;
 
-    modifier onlySender(address sender) {
-        require(msg.sender == sender, "ERR02");
-        _;
-    }
 
     event Payment(address indexed from, address indexed to, uint256 amount, uint256 voucherID);
     event TokenIncremented(address indexed user, address indexed restaurant, uint256 newCount);
@@ -54,7 +50,7 @@ contract TokenManager {
         return tokens[Uaddress][Raddress];
     }
 
-    function pay(address receiver, uint256 amount, uint256 voucherID) external payable onlySender(msg.sender) {
+    function pay(address receiver, uint256 amount, uint256 voucherID) external payable {
         require(actorRegistry.verifySeller(receiver), "ERR03");
         uint256 amountToPay = voucherManager.applyVoucher(voucherID, msg.sender, receiver, amount); // Applica il voucher di sconto
         require(msg.value >= amountToPay, "ERR06");   

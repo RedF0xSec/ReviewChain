@@ -3,17 +3,19 @@ const fs = require('fs');
 
 const web3 = new Web3('ws://localhost:7545');
 
+const CertifiedAuthorityAbi = JSON.parse(fs.readFileSync('CertifiedAuthorityAbi.json', 'utf8'));
 const TokenManagerAbi = JSON.parse(fs.readFileSync('TokenManagerAbi.json', 'utf8'));
 const ReviewManagerAbi = JSON.parse(fs.readFileSync('ReviewManagerAbi.json', 'utf8'));
 const ActorRegistryAbi = JSON.parse(fs.readFileSync('ActorRegistryAbi.json', 'utf8'));
 const VoucherManagerAbi = JSON.parse(fs.readFileSync('VoucherManagerAbi.json', 'utf8'));
 const SupportReviewManagerAbi = JSON.parse(fs.readFileSync('SupportReviewManagerAbi.json', 'utf8'));
 
-const ActorRegistryAddress = '0x68609ed4bEf79697E463c7713083EC785aA56355';
-const VoucherManagerAddress = '0x4CD9326D279B0C79AAa4f2Ffeb6F115821A62bf6';
-const TokenManagerAddress = '0x92aA03d4E6CE66c2185b9D756a7990Ec1a28D13E';
-const SupportReviewManagerAddress = '0x866125a7ba737EdA887C1768EA9F17A190B50F7E';
-const ReviewManagerAddress = '0x5982bF2C89a7372B332d46c3E24e59f99c6Fae71';
+const CertifiedAuthorityAddress = '0xbaa1a5a7241AD2AC61099170F06eaD7a781cc0dB';
+const ActorRegistryAddress = '0xcdF0dc69751422A24Bf289974FfFCB31B09fc805';
+const VoucherManagerAddress = '0xa08D452040fF46d6AC2E5B1DE31E977E185FD48a';
+const TokenManagerAddress = '0x54ae55c5138b259CE3bD74c370976284acdA67D3';
+const SupportReviewManagerAddress = '0x6d07678F6183A9C92d90eF5F408AC5B4ae54Ff51';
+const ReviewManagerAddress = '0x9cb4a558dA99FA436e47dd032dC78D44aF50d9bC';
 
 const tokenManagerContract = new web3.eth.Contract(TokenManagerAbi, TokenManagerAddress);
 const reviewManagerContract = new web3.eth.Contract(ReviewManagerAbi, ReviewManagerAddress);
@@ -98,6 +100,7 @@ async function pagamentoRecensione() {
         await tokenManagerContract.methods.pay(ristorante, prezzo, 0).send({ from: utente, value: prezzo });
     } catch (e) {
         console.log("ERRORE NEL PAGAMENTO: ristorante non registrato");
+        //console.log(e)
         console.log("\n");
     }
 
@@ -209,6 +212,7 @@ async function likeRecensione() {
             await reviewManagerContract.methods.likeReview(reviewID).send({ from: utente2 });
         } catch (e) {
             console.log("Errore: utente2 non può mettere like due volte alla stessa recensione");
+            //console.log(e)
             console.log("\n");
         }
 
@@ -290,6 +294,7 @@ async function testModificaDeleteRecensione() {
         await reviewManagerContract.methods.modifyReview(reviewID, "Tentativo di modifica non autorizzato").send({ from: altroUtente, gas: 6000000 });
     } catch (e) {
         console.log("Errore: altroUtente sta cercando di modificare una recensione non propria!");
+        //console.log(e)
         console.log("\n");
     }
 
@@ -299,6 +304,7 @@ async function testModificaDeleteRecensione() {
         await reviewManagerContract.methods.deleteReview(reviewID).send({ from: altroUtente, gas: 6000000 });
     } catch (e) {
         console.log("Errore: altroUtente sta cercando di cancellare una recensione non propria");
+        //console.log(e)
         console.log("\n");
     }
 
@@ -318,7 +324,7 @@ async function testModificaDeleteRecensione() {
 
 
 // Funzione per testare i casi di errore
-async function testErrorCases() {
+async function testOtherErrorCases() {
     const accounts = await web3.eth.getAccounts();
     const utente = accounts[2];
     const altroUtente = accounts[3];
@@ -331,7 +337,8 @@ async function testErrorCases() {
         console.log("Tentativo di like su una recensione inesistente (errore atteso)");
         await reviewManagerContract.methods.likeReview(9999).send({ from: utente, gas: 6000000 });
     } catch (e) {
-        console.log("Errore: like su recensione inesistente");
+        console.log("ERRORE: utente sta cercando di mettere like su una recensione inesistente");
+        //console.log(e)
         console.log("\n");
     }
 
@@ -342,7 +349,8 @@ async function testErrorCases() {
         console.log("Tentativo di modifica da parte di un altro utente (errore atteso)");
         await reviewManagerContract.methods.modifyReview(reviewID, "Nuovo contenuto non autorizzato").send({ from: altroUtente, gas: 6000000 });
     } catch (e) {
-        console.log("Errore: modifica recensione non propria");
+        console.log("ERRORE: modifica recensione non propria");
+        //console.log(e)
         console.log("\n");
     }
 
@@ -351,7 +359,8 @@ async function testErrorCases() {
         console.log("Tentativo di cancellazione da parte di un altro utente (errore atteso)");
         await reviewManagerContract.methods.deleteReview(reviewID).send({ from: altroUtente, gas: 6000000 });
     } catch (e) {
-        console.log("Errore: cancellazione recensione non propria");
+        console.log("ERRORE: cancellazione recensione non propria");
+        //console.log(e)
         console.log("\n");
     }
 
@@ -360,7 +369,8 @@ async function testErrorCases() {
         console.log("Tentativo di modifica della recensione dopo il limite temporale (errore atteso)");
         await reviewManagerContract.methods.modifyReview(reviewID, "Cambio dopo 24h").send({ from: utente, gas: 6000000 });
     } catch (e) {
-        console.log("Errore: modifica recensione fuori tempo massimo");
+        console.log("ERRORE: modifica recensione fuori tempo massimo");
+        //console.log(e)
         console.log("\n");
     }
 
@@ -373,7 +383,8 @@ async function testErrorCases() {
             gas: 6000000
         });
     } catch (e) {
-        console.log("Errore: voucher già usato");
+        console.log("ERRORE: voucher già usato");
+        //console.log(e)
         console.log("\n"); 
     }
 
@@ -382,7 +393,8 @@ async function testErrorCases() {
         console.log("Tentativo di pagamento con saldo insufficiente (errore atteso)");
         await tokenManagerContract.methods.pay(ristorante, prezzo, 0).send({ from: utente, value: 0 });
     } catch (e) {
-        console.log("Errore: saldo insufficiente");
+        console.log("ERRORE: saldo insufficiente");
+        //console.log(e)
         console.log("\n");
     }
     // 7. Prova a mettere like alla recensione dopo che è stata cancellata
@@ -398,7 +410,8 @@ async function testErrorCases() {
         console.log("Tentativo di like su una recensione cancellata (errore atteso)");
         await reviewManagerContract.methods.likeReview(reviewID).send({ from: utente, gas: 6000000 });
     } catch (e) {
-        console.log("Errore: like su recensione cancellata");
+        console.log("ERRORE: utente sta cercando di mettere like su una recensione cancellata");
+        //console.log(e)
         console.log("\n");
     }
 
@@ -413,7 +426,7 @@ async function main() {
     await pagamentoRecensione();
     await likeRecensione();
     await testModificaDeleteRecensione(); 
-    await testErrorCases();
+    await testOtherErrorCases();
 }
 
 
