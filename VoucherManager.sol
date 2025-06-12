@@ -4,9 +4,8 @@ pragma solidity ^0.8.0;
 import "./ActorRegistry.sol";
 
 struct Voucher {
-    uint256 id;
-    address owner;
-    address restaurant;
+    address Uaddress;
+    address Raddress;
     uint256 discount;
     bool available;
     string metadataURI;
@@ -20,7 +19,7 @@ contract VoucherManager {
     address private supportReviewManager;
     address private owner;
 
-    event VoucherEmitted(uint256 indexed id, address indexed customer, address indexed restaurant, uint256 discount, bool available, string metadataURI);
+    event VoucherEmitted(uint256 indexed id, address indexed Uaddress, address indexed Raddress, uint256 discount, bool available, string metadataURI);
     
     constructor(address _actorRegistry) {
         actorRegistry = ActorRegistry(_actorRegistry);
@@ -44,23 +43,23 @@ contract VoucherManager {
     }
 
     // Funzione interna per emettere un voucher
-    function emitVoucher(address _customer, address _restaurant, uint256 _discount, string memory _metadataURI) external 
+    function emitVoucher(address _Uaddress, address _Raddress, uint256 _discount, string memory _metadataURI) external 
     {
         //check per verificare l'identità dell'utente
         require(msg.sender == supportReviewManager, "ERR02");
-        require(actorRegistry.verifySeller(_restaurant), "ERR03");
+        require(actorRegistry.verifySeller(_Raddress), "ERR03");
         require(_discount > 0, "ERR09");
-        vouchers[counter] = Voucher(counter, _customer, _restaurant, _discount, true, _metadataURI);
+        vouchers[counter] = Voucher(_Uaddress, _Raddress, _discount, true, _metadataURI);
 
-        emit VoucherEmitted(counter, _customer, _restaurant, _discount, true, _metadataURI);
+        emit VoucherEmitted(counter, _Uaddress, _Raddress, _discount, true, _metadataURI);
         counter++;
     }
 
     //Funzione che restituisce il vaucher
-    function getVoucher(uint256 idVaucher) external view returns (address customer, address restaurant, uint256 discount, bool available){
-        require(msg.sender == vouchers[idVaucher].owner, "ERR02");
+    function getVoucher(uint256 idVaucher) external view returns (address Uaddress, address Raddress, uint256 discount, bool available){
+        require(msg.sender == vouchers[idVaucher].Uaddress, "ERR02");
         
-        return (vouchers[idVaucher].owner, vouchers[idVaucher].restaurant, vouchers[idVaucher].discount, vouchers[idVaucher].available);
+        return (vouchers[idVaucher].Uaddress, vouchers[idVaucher].Raddress, vouchers[idVaucher].discount, vouchers[idVaucher].available);
     }
 
     //Funzione per rendere il voucher non utilizzabile
@@ -69,12 +68,12 @@ contract VoucherManager {
     }
 
     //Funzione per verificare se il voucher è applicabile
-    function applyVoucher(uint256 voucherID, address customer, address restaurant, uint256 amount) external view onlyTokenManager returns (uint256){
+    function applyVoucher(uint256 voucherID, address Uaddress, address Raddress, uint256 amount) external view onlyTokenManager returns (uint256){
         if(voucherID == 0)
             return amount;
-        require(customer == vouchers[voucherID].owner, "ERR07");
-        require(restaurant == vouchers[voucherID].restaurant, "ERR08");
-        require(actorRegistry.verifySeller(restaurant), "ERR03");
+        require(Uaddress == vouchers[voucherID].Uaddress, "ERR07");
+        require(Raddress == vouchers[voucherID].Raddress, "ERR08");
+        require(actorRegistry.verifySeller(Raddress), "ERR03");
         require(vouchers[voucherID].discount <= amount, "ERR09");
         require(vouchers[voucherID].available, "ERR09");
 

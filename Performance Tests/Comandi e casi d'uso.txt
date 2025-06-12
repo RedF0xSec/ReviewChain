@@ -1,10 +1,8 @@
-CASI D’USO DI TEST PRESTAZIONI
-1.	REGISTRAZIONE DEL RISTORANTE
-2.	PAGAMENTO UTENTE VERSO RISTORANTE
-3.	LIKE RECENSIONI
-4.	MODIFICA
-5.	CANCELLAZIONE
-COMANDI
-truffle compile
-truffle migrate --network development
-truffle exec scripts/stressTest.js --network development
+Per eseguire il test:
+1. Spostarsi nella cartella Performance Test
+2. Eseguire (compile)
+		truffle compile
+3. Eseguire (deploy)
+	truffle migrate --network development
+4. Eseguire
+	truffle exec scripts/Test.js --network development

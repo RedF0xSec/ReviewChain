@@ -10,12 +10,12 @@ const ActorRegistryAbi = JSON.parse(fs.readFileSync('ActorRegistryAbi.json', 'ut
 const VoucherManagerAbi = JSON.parse(fs.readFileSync('VoucherManagerAbi.json', 'utf8'));
 const SupportReviewManagerAbi = JSON.parse(fs.readFileSync('SupportReviewManagerAbi.json', 'utf8'));
 
-const CertifiedAuthorityAddress = '0xbaa1a5a7241AD2AC61099170F06eaD7a781cc0dB';
-const ActorRegistryAddress = '0xcdF0dc69751422A24Bf289974FfFCB31B09fc805';
-const VoucherManagerAddress = '0xa08D452040fF46d6AC2E5B1DE31E977E185FD48a';
-const TokenManagerAddress = '0x54ae55c5138b259CE3bD74c370976284acdA67D3';
-const SupportReviewManagerAddress = '0x6d07678F6183A9C92d90eF5F408AC5B4ae54Ff51';
-const ReviewManagerAddress = '0x9cb4a558dA99FA436e47dd032dC78D44aF50d9bC';
+const CertifiedAuthorityAddress = '0xDd56F111EF526D2baf02553ffDD9B9Fd5F0e676b';
+const ActorRegistryAddress = '0x37876B7F1aF0708d6806C7D2836384339C710bCC';
+const VoucherManagerAddress = '0x309f4F80C3882b2814c4A578c729825F2a0cbd00';
+const TokenManagerAddress = '0xfA8345c986430D25981BCeD57f8671efDd2971b9';
+const SupportReviewManagerAddress = '0x933BeE599D85978e910d52AA70647d3030129898';
+const ReviewManagerAddress = '0x06cCdD9b99389f7B0e0585Bd0503ba0B2F1DB0Bf';
 
 const tokenManagerContract = new web3.eth.Contract(TokenManagerAbi, TokenManagerAddress);
 const reviewManagerContract = new web3.eth.Contract(ReviewManagerAbi, ReviewManagerAddress);

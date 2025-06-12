@@ -11664,12 +11664,12 @@
     "5777": {
       "events": {},
       "links": {},
-      "address": "0x21c2ffcB727f5F801bC49A8b292871FB01B74A82",
-      "transactionHash": "0x822e109c6b32705780eb4303e8907ad42b8e8f2ba0556c5365b35f4aabdd7a50"
+      "address": "0x3ebfC2d09c63241e6704ebF4E1518F0b653D0cb2",
+      "transactionHash": "0x288bd3540970ec4809d2c8511442b8a370dd8ae82b1950c2fd132af517cf2d3f"
     }
   },
   "schemaVersion": "3.4.16",
-  "updatedAt": "2025-06-12T09:50:53.412Z",
+  "updatedAt": "2025-06-12T20:23:22.542Z",
   "networkType": "ethereum",
   "devdoc": {
     "kind": "dev",

@@ -12481,12 +12481,12 @@
     "5777": {
       "events": {},
       "links": {},
-      "address": "0x9be19DE43687FDB15DaD4EdEBBBc60fB0C3B1e69",
-      "transactionHash": "0x92ed669e3f45612815f7f0d24f6d909f1a7a8b975d157f55a5f097fe8f364e9b"
+      "address": "0x8d6924D21AFC0A4F065f12EE5f1A831Fab8EDeCd",
+      "transactionHash": "0xc342e27e5d36477d8283097a0a6653724d4db6c6390375f9b7f637792bbeb848"
     }
   },
   "schemaVersion": "3.4.16",
-  "updatedAt": "2025-06-12T09:50:53.437Z",
+  "updatedAt": "2025-06-12T20:23:22.571Z",
   "networkType": "ethereum",
   "devdoc": {
     "kind": "dev",
