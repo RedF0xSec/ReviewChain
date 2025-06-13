@@ -35,7 +35,7 @@ ReviewChain/
 │
 └── PerformanceTest/              # Performance testing suite
     │
-    ├── Comandi e casi d'uso.txt       # Manual with usage commands and test cases
+    ├── Comandi.txt       # Manual with usage commands and test cases
     ├── truffle-config.js              # Truffle network configuration
     │
     ├── build/contracts/               # Compiled contract ABIs (JSON)
