@@ -9,6 +9,7 @@ It is built using Solidity smart contracts, with deployment and interaction scri
 - Voucher and token issuance for discounts/proof-of-purchase using VoucherManager.sol and TokenManager.sol
 - JavaScript scripts to compile, deploy, and interact with the smart contracts
 
+
 ## Struttura della cartella
 ReviewChain/
 │
@@ -17,7 +18,7 @@ ReviewChain/
 ├── package.json                  # Node.js dependencies
 ├── package-lock.json             # NPM lockfile
 ├── README.md                     # Project documentation
-├── ERRORCODES.md           # Error codes used by smart contracts
+├── ERRORCODES.md                 # Error codes used by smart contracts
 │
 ├── ActorRegistry.sol             # Smart contract for actor registry
 ├── CertifiedAuthority.sol        # Certified authority logic
@@ -56,6 +57,7 @@ ReviewChain/
     │
     └── scripts/
         └── Test.js                    # Stress/functional testing script
+
 
 ## ERROR CODES
 **ERR01** – Invalid VAT number
