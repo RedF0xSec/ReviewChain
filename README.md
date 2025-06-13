@@ -2,7 +2,7 @@
 ReviewChain is a decentralized platform for the transparent management of reviews and certified authorities.
 It is built using Solidity smart contracts, with deployment and interaction scripts written in Node.js, and performance testing powered by Truffle.
 
-## Funzionalità principali
+## Basic Functionalities
 - Actor management via ActorRegistry.sol
 - Certified authority management with CertifiedAuthority.sol
 - Review creation and support handled by ReviewManager.sol and SupportReviewManager.sol
@@ -10,7 +10,7 @@ It is built using Solidity smart contracts, with deployment and interaction scri
 - JavaScript scripts to compile, deploy, and interact with the smart contracts
 
 
-## 📁 Struttura della cartella
+## Folder Structure
 
 ```
 ReviewChain/
