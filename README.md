@@ -10,7 +10,9 @@ It is built using Solidity smart contracts, with deployment and interaction scri
 - JavaScript scripts to compile, deploy, and interact with the smart contracts
 
 
-## Struttura della cartella
+## 📁 Struttura della cartella
+
+```
 ReviewChain/
 │
 ├── .git/                         # Git version control folder
@@ -57,6 +59,8 @@ ReviewChain/
     │
     └── scripts/
         └── Test.js                    # Stress/functional testing script
+```
+
 
 
 ## ERROR CODES
