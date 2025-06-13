@@ -16,8 +16,7 @@ contract ActorRegistry {
 
     // Aggiunge un seller se la PIVA è valida
     function addSeller(address restaurant, string calldata piva) public {
-        require(certifiedAuthority.isPivaValid(piva), "ERR01");
-
+        require(certifiedAuthority.isPivaValid(piva), "piva not valid");
         verifiedSellers[restaurant] = true;
         emit RestaurantAdded(restaurant);
         

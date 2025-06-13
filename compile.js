@@ -14,6 +14,7 @@ const actorRegistrySource = readContract('ActorRegistry.sol');
 const voucherManagerSource = readContract('VoucherManager.sol');
 const tokenManagerSource = readContract('TokenManager.sol');
 const reviewManagerSource = readContract('ReviewManager.sol');
+const supportReviewManagerSource = readContract('SupportReviewManager.sol');
 
 // Input for the Solidity compiler
 const input = {
@@ -24,6 +25,7 @@ const input = {
         'VoucherManager.sol': { content: voucherManagerSource },
         'TokenManager.sol': { content: tokenManagerSource },
         'ReviewManager.sol': { content: reviewManagerSource },
+	    'SupportReviewManager.sol': { content: supportReviewManagerSource},
     },
     settings: {
         outputSelection: {
@@ -62,6 +64,7 @@ writeOutput('ActorRegistry');
 writeOutput('VoucherManager');
 writeOutput('TokenManager');
 writeOutput('ReviewManager');
+writeOutput('SupportReviewManager');
 
 
 console.log('All contracts compiled successfully!');

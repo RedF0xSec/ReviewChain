@@ -1,0 +1,8 @@
+Per eseguire il test:
+1. Spostarsi nella cartella Performance Test
+2. Eseguire (compile)
+		truffle compile
+3. Eseguire (deploy)
+	truffle migrate --network development
+4. Eseguire
+	truffle exec scripts/Test.js --network development
