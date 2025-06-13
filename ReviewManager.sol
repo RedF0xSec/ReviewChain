@@ -7,7 +7,11 @@ contract ReviewManager {
     struct Review {
         address Uaddress;
         address Raddress;
+        address Uaddress;
+        address Raddress;
         string content;
+        uint256 numLikes;
+        uint256 timestamp;
         uint256 numLikes;
         uint256 timestamp;
     }

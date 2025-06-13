@@ -12,7 +12,7 @@ contract CertifiedAuthority {
         validPivas["IT10762910015"] = "PEPPERONI PIZA PLAZA";
         validPivas["IT04273860611"] = "P. GRECO";
     }
-    //c'è il calldata perché è più efficiente con l'external
+    // c'è il calldata perché è più efficiente con l'external
     function isPivaValid(string calldata piva) external view returns (bool){
         string memory value = validPivas[piva];
         return bytes(value).length > 0;

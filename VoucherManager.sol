@@ -11,6 +11,10 @@ struct Voucher {
     string metadataURI;
 }
 
+// Qui va aggiunto qualcosa che possa far capire se è stato già usato o no
+// voglio mettere un booleano che mi dica se è stato usato o no, ma non so se è una buona idea
+
+
 contract VoucherManager {
     uint256 private counter; //per l'id progressivo dei voucher
     mapping(uint256 => Voucher) public vouchers;    //voucher associato all'id

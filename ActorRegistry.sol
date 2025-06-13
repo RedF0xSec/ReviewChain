@@ -3,6 +3,7 @@ pragma solidity ^0.8.0;
 
 import "./CertifiedAuthority.sol";
 
+// Questo contratto serve per registrare i ristoranti.
 contract ActorRegistry {
     CertifiedAuthority public certifiedAuthority;
     mapping(address => bool) public verifiedSellers;
