@@ -59,11 +59,6 @@ ReviewChain/
     │
     └── scripts/
         └── Test.js                    # Stress/functional testing script
-<<<<<<< Updated upstream
-```
-
-
-=======
 |
 ├── Slither     # Vulnerability assessment results folder
 >>>>>>> Stashed changes
