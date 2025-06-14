@@ -5,16 +5,21 @@ import "./ActorRegistry.sol";
 import "./VoucherManager.sol";
 
 contract TokenManager {
-    string public constant name = "BITE";
-    string public constant symbol = "BTE";
-    uint8 public constant decimals = 18;
+    string public name = "BITE";
+    string public symbol = "BTE";
+    uint8 public decimals = 18;
 
-    ActorRegistry public immutable actorRegistry;
-    VoucherManager public immutable voucherManager;
+    ActorRegistry public actorRegistry;
+    VoucherManager public voucherManager;
     address private supportReviewManager;
-    address private immutable owner;
+    address private owner;
+
     mapping(address => mapping(address => uint256)) private tokens;
 
+    modifier onlySender(address sender) {
+        require(msg.sender == sender, "E400");
+        _;
+    }
 
     event Payment(address indexed from, address indexed to, uint256 amount, uint256 voucherID);
     event TokenIncremented(address indexed user, address indexed restaurant, uint256 newCount);
@@ -28,8 +33,7 @@ contract TokenManager {
     }
 
     function setAuthorizedAddress(address _supportReviewManager) external {
-        require(msg.sender == owner, "ERR04");
-
+        require(msg.sender == owner, "E401");
         supportReviewManager = _supportReviewManager;
     }
 
@@ -39,9 +43,8 @@ contract TokenManager {
     }
 
     function decrementTokenCounter(address Uaddress, address Raddress) external {
-        require(msg.sender == supportReviewManager, "ERR04");
-        require(getTokenCountUserPerRestaurant(Uaddress, Raddress) > 0, "ERR05");
-
+        require(msg.sender == supportReviewManager, "E401");
+        require(getTokenCountUserPerRestaurant(Uaddress, Raddress) > 0, "E402");
         tokens[Uaddress][Raddress]--;
         emit TokenDecremented(Uaddress, Raddress, tokens[Uaddress][Raddress]);
     }
@@ -50,21 +53,15 @@ contract TokenManager {
         return tokens[Uaddress][Raddress];
     }
 
-    function pay(address receiver, uint256 amount, uint256 voucherID) external payable {
-        require(actorRegistry.verifySeller(receiver), "ERR03");
+    function pay(address receiver, uint256 amount, uint256 voucherID) external payable onlySender(msg.sender) {
+        require(actorRegistry.verifySeller(receiver), "E403");
         uint256 amountToPay = voucherManager.applyVoucher(voucherID, msg.sender, receiver, amount);
-        require(msg.value >= amountToPay, "ERR06");
-
-        // Aggiorno prima lo stato interno
+        require(msg.value >= amountToPay, "E404");   
+        payable(receiver).transfer(amountToPay); 
+        payable(msg.sender).transfer(msg.value - amountToPay);   
         incrementTokenCounter(msg.sender, receiver);
         voucherManager.invalidateVoucher(voucherID);
-
-        // Emissione eventi dopo lo stato
         emit VoucherUsed(voucherID, msg.sender, receiver);
         emit Payment(msg.sender, receiver, amountToPay, voucherID);
-
-        // Solo alla fine, trasferisco gli Ether
-        payable(receiver).transfer(amountToPay);
-        payable(msg.sender).transfer(msg.value - amountToPay);
     }
 }

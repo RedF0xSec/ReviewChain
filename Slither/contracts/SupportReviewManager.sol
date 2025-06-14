@@ -6,11 +6,11 @@ import "./TokenManager.sol";
 import "./ActorRegistry.sol";
 
 contract SupportReviewManager {
-    address private immutable owner;
+    address private owner;
     address private reviewManager;
-    ActorRegistry public immutable actorRegistry;
-    VoucherManager public immutable voucherManager;
-    TokenManager public immutable tokenManager;
+    ActorRegistry public actorRegistry;
+    VoucherManager public voucherManager;
+    TokenManager public tokenManager;
 
     event ReviewAdded(uint256 indexed reviewID, address Uaddress, address Raddress, string content);
     event ReviewModified(uint256 indexed reviewID, string newContent);
@@ -25,19 +25,17 @@ contract SupportReviewManager {
     }
 
     function setAuthorizedAddress(address _reviewManager) external {
-        require(msg.sender == owner, "ERR04");
-        
+        require(msg.sender == owner, "you are not authorized");
         reviewManager = _reviewManager;
     }
 
     modifier onlyReviewManager {
-        require(msg.sender == reviewManager, "ERR14");
+        require(msg.sender == reviewManager, "only ReviewManager is authorized");
         _;
     }
 
     function add(address Uaddress, address Raddress) external onlyReviewManager{
-        require(actorRegistry.verifySeller(Raddress), "ERR03");
-        
+        require(actorRegistry.verifySeller(Raddress), "The restaurant is not part of the affiliated system");
         tokenManager.decrementTokenCounter(Uaddress, Raddress);
     }
 
@@ -46,8 +44,7 @@ contract SupportReviewManager {
     }
 
     function like(address Uaddress, address Raddress, uint256 reviewID, uint256 numLikes, address owner) external onlyReviewManager{
-        require(tokenManager.getTokenCountUserPerRestaurant(Uaddress, Raddress) > 0, "ERR05");
-        
+        require(tokenManager.getTokenCountUserPerRestaurant(Uaddress, Raddress) > 0, "You need at least one token to leave a review");
         emit ReviewLiked(reviewID, Uaddress);
         emitV(owner, Raddress, numLikes);
     }
@@ -55,7 +52,7 @@ contract SupportReviewManager {
     function emitV(address Uaddress, address Raddress, uint256 numLikes) private{
         numLikes++;
         if(numLikes == 3)
-            voucherManager.emitVoucher(Uaddress, Raddress, 2 ether, "discount");
+            voucherManager.emitVoucher(Uaddress, Raddress, 2000000000000000000, "discount");
     }
 
     function modifyEvent(uint256 reviewID, string memory content) external onlyReviewManager{

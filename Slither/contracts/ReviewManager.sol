@@ -19,16 +19,16 @@ contract ReviewManager {
 
     uint256 public reviewCounter;
 
-    SupportReviewManager public immutable supportReviewManager;
+    SupportReviewManager public supportReviewManager;
 
     modifier onlyAuthor(uint256 reviewID) {
-        require(reviews[reviewID].Uaddress == msg.sender, "ERR11");
+        require(reviews[reviewID].Uaddress == msg.sender, "E500");
         _;
     }
 
     //funzione per controllare se una recensione esiste
     function checkIfExist(uint256 reviewID) private view {
-        require(reviews[reviewID].Uaddress != address(0), "ERR10");
+        require(reviews[reviewID].Uaddress != address(0), "E501");
     }
 
     constructor(address _supportReviewManager) {
@@ -49,9 +49,9 @@ contract ReviewManager {
 
     function likeReview(uint256 reviewID) public {
         checkIfExist(reviewID);
-        require(!hasVoted[msg.sender][reviewID], "ERR13");
-
+        require(!hasVoted[msg.sender][reviewID], "E502");
         supportReviewManager.like(msg.sender, reviews[reviewID].Raddress, reviewID, reviews[reviewID].numLikes, reviews[reviewID].Uaddress);
+
         reviews[reviewID].numLikes++;
         hasVoted[msg.sender][reviewID] = true;
         
@@ -59,7 +59,7 @@ contract ReviewManager {
 
     function modifyReview(uint256 reviewID, string memory newcontent) public onlyAuthor(reviewID) {
         checkIfExist(reviewID);
-        require(block.timestamp <= reviews[reviewID].timestamp + 1 days, "ERR12");
+        require(block.timestamp <= reviews[reviewID].timestamp + 1 days, "E503");
 
         reviews[reviewID].content = newcontent;
         reviews[reviewID].numLikes = 0;

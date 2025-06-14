@@ -59,9 +59,14 @@ ReviewChain/
     │
     └── scripts/
         └── Test.js                    # Stress/functional testing script
+<<<<<<< Updated upstream
 ```
 
 
+=======
+|
+├── Slither     # Vulnerability assessment results folder
+>>>>>>> Stashed changes
 
 ## ERROR CODES
 - **ERR01** – Invalid VAT number

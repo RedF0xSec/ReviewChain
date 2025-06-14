@@ -14,10 +14,10 @@ struct Voucher {
 contract VoucherManager {
     uint256 private counter; //per l'id progressivo dei voucher
     mapping(uint256 => Voucher) public vouchers;    //voucher associato all'id
-    ActorRegistry private actorRegistry;
+    ActorRegistry private immutable actorRegistry;
     address private tokenManager;
     address private supportReviewManager;
-    address private owner;
+    address private immutable owner;
 
     event VoucherEmitted(uint256 indexed id, address indexed Uaddress, address indexed Raddress, uint256 discount, bool available, string metadataURI);
     
@@ -38,8 +38,12 @@ contract VoucherManager {
     }
 
     function setAuthorizedAddress( address _tokenManager, address _supportReviewManager) external onlyOwner{
-        tokenManager = _tokenManager;
-        supportReviewManager = _supportReviewManager;
+        if(_tokenManager != address(0)){
+            tokenManager = _tokenManager;
+        }
+        if(_supportReviewManager != address(0)){
+            supportReviewManager = _supportReviewManager;
+        }
     }
 
     // Funzione interna per emettere un voucher
